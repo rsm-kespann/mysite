@@ -7,7 +7,7 @@ about:
         - icon: envelope
           href: mailto:kespann@ucsd.edu
         - icon: linkedin
-          href: www.linkedin.com/in/kennedy-s-ucsd
+          href: https://www.linkedin.com/in/kennedy-s-ucsd/
 ---
 
 Feel free to explore my website to learn more about me and my work!
