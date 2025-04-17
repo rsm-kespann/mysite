@@ -1,7 +1,7 @@
 --- 
 title: Homework 1
 author: Kennedy Spann
-
+format: html
 ---
 
 # Question 1

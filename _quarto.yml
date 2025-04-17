@@ -12,6 +12,11 @@ website:
         text: Resume
       - href: projects.qmd
         text: Projects
+        menu:
+          - text: Homework 1
+            href: projects/hw1/index.qmd
+          - text: Homework 2
+            href: projects/hw2/index.qmd
       - href: publications.qmd
         text: Publications
 
