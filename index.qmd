@@ -1,0 +1,17 @@
+---
+title: "Kennedy Spann"
+image: images/profile.jpeg
+about:
+    template: jolla
+    links:
+        - icon: envelope
+          href: mailto:kespann@ucsd.edu
+        - icon: linkedin
+          href: www.linkedin.com/in/kennedy-s-ucsd
+---
+
+
+
+Welcome to my website! 
+
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
