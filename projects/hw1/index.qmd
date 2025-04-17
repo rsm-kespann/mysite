@@ -9,6 +9,7 @@ format: html
 Prof says make a chart.
 
 ```{python}
+#| echo: false
 import matplotlib.pyplot as plt
 
 data = {'A': 10, 'B': 15, 'C': 7}

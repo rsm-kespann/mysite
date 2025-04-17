@@ -6,19 +6,18 @@ website:
   title: "Kennedy Spann"
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - href: resume.qmd
-        text: Resume
-      - href: projects.qmd
-        text: Projects
+      - text: Home
+        href: home.qmd
+      - text: Resume
+        href: resume.qmd
+      - text: Homeworks
         menu:
           - text: Homework 1
             href: projects/hw1/index.qmd
           - text: Homework 2
             href: projects/hw2/index.qmd
-      - href: publications.qmd
-        text: Publications
+      - text: Publications
+        href: publications.qmd
 
 format:
   html:
@@ -27,6 +26,4 @@ format:
       - brand
     css: styles.css
     toc: true
-
-
 

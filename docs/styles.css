@@ -1,1 +1,51 @@
 /* css styles */
+/* Emerald green navbar */
+.navbar {
+    background-color: #336896;
+  }
+  
+  /* White text for contrast */
+  .navbar .navbar-brand,
+  .navbar .nav-link {
+    color: white !important;
+  }
+  
+  /* Light mint on hover */
+  .navbar .nav-link:hover,
+  .navbar .nav-link.active {
+    color: #0d2650 !important;
+  }
+  
+
+  /* Dropdown menu background (match navbar) */
+.dropdown-menu {
+    background-color: #336896;
+  }
+  
+  /* Dropdown links: white text */
+  .dropdown-menu .dropdown-item {
+    color: white !important;
+  }
+  
+  /* Hover effect for dropdown links */
+  .dropdown-menu .dropdown-item:hover {
+    background-color: #336896 !important; /* deeper green */
+    color: #0d2650 !important;
+  }
+  
+  /* Make the hamburger icon white */
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  }
+
+  body {
+    background-color: #fdfdfd; /* soft off-white */
+  }
+  
+  main {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  

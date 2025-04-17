@@ -1,0 +1,47 @@
+
+# My Story
+
+Hi! I’m Kennedy Spann. I’m passionate about using data to improve lives, especially in the context of maternal and infant health.
+
+---
+
+## Research Experience
+### University of California, Davis 
+
+#### *Equine Infectious Disease Center*
+
+My research journey started in undergrad with studying cattle behavior and then equine infectious disease. 
+
+<img src="images/equine1.jpeg" alt="Equine research photo" width="400" style="display:block; margin: 1rem auto; border-radius: 10px;">
+
+<img src="images/cow.HEIC" alt="Cow research photo" width="400" style="display:block; margin: 1rem auto; border-radius: 10px;">
+
+---
+
+#### *Bodega Bay*
+
+During a summer research program at Bodega Bay, I explored marine biodiversity and helped monitor ecological health along California’s coast.
+
+<img src="images/bodega.JPG" alt="Marine biology at Bodega" width="400" style="display:block; margin: 1rem auto; border-radius: 10px;">
+
+### Bode Lab
+
+Focusing on pediatric nutrition. Participating in conferences.
+
+<img src="images/hmi_all.jpg" alt="Symposium 1" width="400" style="display:block; margin: 1rem auto; border-radius: 10px;">
+
+<img src="images/hmi1.jpg" alt="HMI symp" width="400" style="display:block; margin: 1rem auto; border-radius: 10px;">
+
+---
+
+## Outside the Lab
+
+In my free time, you can find me enjoying nature:
+- hiking
+- running
+- with my dogs 
+
+<div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+  <img src="images/backpacking.JPG" alt="Backpacking" width="300" style="border-radius: 12px;">
+  <img src="images/dogs.JPG" alt="My dogs in snow" width="300" style="border-radius: 12px;">
+</div>
