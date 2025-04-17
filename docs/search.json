@@ -33,5 +33,19 @@
     "title": "My Homework",
     "section": "",
     "text": "Welcome to my website!\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  },
+  {
+    "objectID": "projects/hw1/index.html",
+    "href": "projects/hw1/index.html",
+    "title": "Homework 1",
+    "section": "",
+    "text": "Question 1\nProf says make a chart.\n\nimport matplotlib.pyplot as plt\n\ndata = {'A': 10, 'B': 15, 'C': 7}\nnames = list(data.keys())\nvalues = list(data.values())\n\nplt.bar(names, values)\nplt.title('Simple Bar Chart')\nplt.show()"
+  },
+  {
+    "objectID": "projects/hw1/Interactive-1.html",
+    "href": "projects/hw1/Interactive-1.html",
+    "title": "Kennedy Spann",
+    "section": "",
+    "text": "Connected to base (Python 3.12.7)\n\nimport matplotlib.pyplot as plt\n\ndata = {'A': 10, 'B': 15, 'C': 7}\nnames = list(data.keys())\nvalues = list(data.values())\n\nplt.bar(names, values)\nplt.title('Simple Bar Chart')\nplt.show()"
   }
 ]

@@ -1,0 +1,21 @@
+--- 
+title: Homework 1
+author: Kennedy Spann
+
+---
+
+# Question 1
+
+Prof says make a chart.
+
+```{python}
+import matplotlib.pyplot as plt
+
+data = {'A': 10, 'B': 15, 'C': 7}
+names = list(data.keys())
+values = list(data.values())
+
+plt.bar(names, values)
+plt.title('Simple Bar Chart')
+plt.show()
+```
