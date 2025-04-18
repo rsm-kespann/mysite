@@ -10,11 +10,5 @@ about:
           href: https://www.linkedin.com/in/kennedy-s-ucsd/
 ---
 
-Feel free to explore my website to learn more about me and my work!
-
-
-<div style="text-align: center; margin-top: 2rem;">
-  <a href="mystory.qmd" style="padding: 1rem 2rem; background-color: #336896; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
-    📖 Read My Story
-  </a>
-</div>
+Welcome to my website!  
+To learn more about me, [click here to read my story](mystory.qmd).
