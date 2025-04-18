@@ -1,31 +1,24 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Kennedy Spann",
+    "objectID": "mystory.html",
+    "href": "mystory.html",
+    "title": "My Story",
     "section": "",
-    "text": "Welcome to my website!\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "Hi! I’m Kennedy Spann. I’m passionate about using data to improve lives, especially in the context of maternal and infant health.\n\n\n\n\n\n\n\nMy research journey started in undergrad with studying cattle behavior and then equine infectious disease.\n\n\n\n\n\n\nDuring a summer research program at Bodega Bay, I explored marine biodiversity and helped monitor ecological health along California’s coast.\n\n\n\n\n\nFocusing on pediatric nutrition. Participating in conferences.\n\n\n\n\n\n\n\nIn my free time, you can find me enjoying nature: - hiking - running - with my dogs"
   },
   {
-    "objectID": "resume.html",
-    "href": "resume.html",
-    "title": "Resume",
+    "objectID": "mystory.html#research-experience",
+    "href": "mystory.html#research-experience",
+    "title": "My Story",
     "section": "",
-    "text": "Last updated 2025-04-25\nDownload PDF file."
+    "text": "My research journey started in undergrad with studying cattle behavior and then equine infectious disease.\n\n\n\n\n\n\nDuring a summer research program at Bodega Bay, I explored marine biodiversity and helped monitor ecological health along California’s coast.\n\n\n\n\n\nFocusing on pediatric nutrition. Participating in conferences."
   },
   {
-    "objectID": "publications.html",
-    "href": "publications.html",
-    "title": "Publications",
+    "objectID": "mystory.html#outside-the-lab",
+    "href": "mystory.html#outside-the-lab",
+    "title": "My Story",
     "section": "",
-    "text": "Welcome to my website!\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
-  },
-  {
-    "objectID": "blog.html",
-    "href": "blog.html",
-    "title": "Blog",
-    "section": "",
-    "text": "Welcome to my website!\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "In my free time, you can find me enjoying nature: - hiking - running - with my dogs"
   },
   {
     "objectID": "projects.html",
@@ -42,13 +35,6 @@
     "text": "Question 1\nProf says make a chart."
   },
   {
-    "objectID": "projects/hw1/Interactive-1.html",
-    "href": "projects/hw1/Interactive-1.html",
-    "title": "Kennedy Spann",
-    "section": "",
-    "text": "Connected to base (Python 3.12.7)\n\nimport matplotlib.pyplot as plt\n\ndata = {'A': 10, 'B': 15, 'C': 7}\nnames = list(data.keys())\nvalues = list(data.values())\n\nplt.bar(names, values)\nplt.title('Simple Bar Chart')\nplt.show()"
-  },
-  {
     "objectID": "home.html",
     "href": "home.html",
     "title": "Kennedy Spann",
@@ -56,73 +42,24 @@
     "text": "Feel free to explore my website to learn more about me and my work!\n\n 📖 Read My Story"
   },
   {
-    "objectID": "home.html#explore-more",
-    "href": "home.html#explore-more",
-    "title": "Kennedy Spann",
-    "section": "Explore More",
-    "text": "Explore More\n\n📖 My Story\n🧠 Research Interests\n✨ Highlights"
-  },
-  {
-    "objectID": "home.html#my-story",
-    "href": "home.html#my-story",
-    "title": "Kennedy Spann",
-    "section": "My Story",
-    "text": "My Story\nI’m Kennedy Spann, a UCSD student passionate about connecting data with real-world impact…"
-  },
-  {
-    "objectID": "home.html#research-interests",
-    "href": "home.html#research-interests",
-    "title": "Kennedy Spann",
-    "section": "Research Interests",
-    "text": "Research Interests\nI enjoy working at the intersection of business analytics, health data, and technical storytelling…"
-  },
-  {
-    "objectID": "home.html#highlights",
-    "href": "home.html#highlights",
-    "title": "Kennedy Spann",
-    "section": "Highlights",
-    "text": "Highlights\n\nMSBA at UCSD\n\nLab experience with HMO research\n\nPassion for personalized pediatric health"
-  },
-  {
-    "objectID": "mystory.html",
-    "href": "mystory.html",
-    "title": "My Story",
+    "objectID": "resume.html",
+    "href": "resume.html",
+    "title": "Resume",
     "section": "",
-    "text": "Hi! I’m Kennedy Spann. I’m passionate about using data to improve lives, especially in the context of maternal and infant health.\n\n\n\n\n\n\n\nMy research journey started in undergrad with studying cattle behavior and then equine infectious disease.\n\n\n\n\n\n\nDuring a summer research program at Bodega Bay, I explored marine biodiversity and helped monitor ecological health along California’s coast.\n\n\n\n\n\nFocusing on pediatric nutrition. Participating in conferences.\n\n\n\n\n\n\n\nIn my free time, you can find me enjoying nature: - hiking - running - with my dogs"
+    "text": "Last updated 2025-04-25\nDownload PDF file."
   },
   {
-    "objectID": "home.html#learn-more-about-me",
-    "href": "home.html#learn-more-about-me",
+    "objectID": "projects/hw1/Interactive-1.html",
+    "href": "projects/hw1/Interactive-1.html",
     "title": "Kennedy Spann",
-    "section": "Learn More About Me",
-    "text": "Learn More About Me\n\n 📖 Read My Story"
+    "section": "",
+    "text": "Connected to base (Python 3.12.7)\n\nimport matplotlib.pyplot as plt\n\ndata = {'A': 10, 'B': 15, 'C': 7}\nnames = list(data.keys())\nvalues = list(data.values())\n\nplt.bar(names, values)\nplt.title('Simple Bar Chart')\nplt.show()"
   },
   {
-    "objectID": "mystory.html#equine-research-undergrad",
-    "href": "mystory.html#equine-research-undergrad",
-    "title": "My Story",
+    "objectID": "publications.html",
+    "href": "publications.html",
+    "title": "Publications",
     "section": "",
-    "text": "My research journey started in undergrad with equine science. I studied metabolic markers in performance horses and learned the basics of scientific investigation."
-  },
-  {
-    "objectID": "mystory.html#marine-biology-bodega-bay",
-    "href": "mystory.html#marine-biology-bodega-bay",
-    "title": "My Story",
-    "section": "",
-    "text": "During a summer research program at Bodega Bay, I explored marine biodiversity and helped monitor ecological health along California’s coast."
-  },
-  {
-    "objectID": "mystory.html#outside-the-lab",
-    "href": "mystory.html#outside-the-lab",
-    "title": "My Story",
-    "section": "",
-    "text": "In my free time, you can find me enjoying nature: - hiking - running - with my dogs"
-  },
-  {
-    "objectID": "mystory.html#research-experience",
-    "href": "mystory.html#research-experience",
-    "title": "My Story",
-    "section": "",
-    "text": "My research journey started in undergrad with studying cattle behavior and then equine infectious disease.\n\n\n\n\n\n\nDuring a summer research program at Bodega Bay, I explored marine biodiversity and helped monitor ecological health along California’s coast.\n\n\n\n\n\nFocusing on pediatric nutrition. Participating in conferences."
+    "text": "Welcome to my website!\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
   }
 ]
