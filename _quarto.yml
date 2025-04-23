@@ -13,7 +13,7 @@ website:
       - text: Homeworks
         menu:
           - text: Homework 1
-            href: projects/hw1/index.qmd
+            href: projects/hw1/hw1_questions.qmd
           - text: Homework 2
             href: projects/hw2/index.qmd
       - text: Publications
