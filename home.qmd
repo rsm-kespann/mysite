@@ -11,4 +11,9 @@ about:
 ---
 
 Welcome to my website!  
-To learn more about me, [click here to read my story](mystory.qmd).
+
+<div style="text-align: center; margin-top: 2rem;">
+  <a href="mystory.qmd" style="padding: 1rem 2rem; background-color: #336896; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
+    📖 Read My Story
+  </a>
+</div>
