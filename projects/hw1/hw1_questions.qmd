@@ -38,7 +38,7 @@ This project seeks to replicate their results.
 
 ### Description
 
-_todo: Read the data into R/Python and describe the data_
+_Read the data into Python and describe the data_
 
 ```{python}
 import pandas as pd
@@ -48,6 +48,12 @@ df = pd.read_stata("karlan_list_2007.dta")
 
 # Preview the first few rows
 df.head()
+```
+
+
+```{python}
+# Number of rows and columns
+df.shape
 ```
 
 
@@ -116,6 +122,34 @@ df.head()
 As an ad hoc test of the randomization mechanism, I provide a series of tests that compare aspects of the treatment and control groups to assess whether they are statistically significantly different from one another.
 
 _todo: test a few variables other than the key outcome variables (for example, test months since last donation) to see if the treatment and control groups are statistically significantly different at the 95% confidence level. For at least one variable, perform the test as both t-test (use the formula in the class slides) and separately as a linear regression (regress for example mrm2 on treatment); confirm both methods yield the exact same results. It might be helpful to compare parts of your analysis to Table 1 in the paper. Be sure to comment on your results (hint: why is Table 1 included in the paper)._
+
+
+```{python}
+import scipy.stats as stats
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+
+# Check group sizes
+df['treatment'].value_counts()
+```
+
+```{python, echo=TRUE, results='hide', output='asis'}
+
+# Check for missing values in 'mrm2'
+df['mrm2'].isnull().sum()
+
+# Optional: drop missing values before t-test
+mrm2_treat = df[df['treatment'] == 1]['mrm2'].dropna()
+mrm2_ctrl = df[df['treatment'] == 0]['mrm2'].dropna()
+
+stats.ttest_ind(mrm2_treat, mrm2_ctrl, equal_var=False)
+```
+
+```{python}
+# Linear regression version: regress mrm2 on treatment
+model = smf.ols('mrm2 ~ treatment', data=df).fit()
+model.summary()
+```
 
 
 ## Experimental Results
