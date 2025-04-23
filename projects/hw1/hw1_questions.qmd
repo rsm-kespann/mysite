@@ -121,19 +121,32 @@ df.shape
 
 As an ad hoc test of the randomization mechanism, I provide a series of tests that compare aspects of the treatment and control groups to assess whether they are statistically significantly different from one another.
 
-_todo: test a few variables other than the key outcome variables (for example, test months since last donation) to see if the treatment and control groups are statistically significantly different at the 95% confidence level. For at least one variable, perform the test as both t-test (use the formula in the class slides) and separately as a linear regression (regress for example mrm2 on treatment); confirm both methods yield the exact same results. It might be helpful to compare parts of your analysis to Table 1 in the paper. Be sure to comment on your results (hint: why is Table 1 included in the paper)._
-
 
 ```{python}
+#| echo: false
 import scipy.stats as stats
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 
-# Check group sizes
-df['treatment'].value_counts()
+# Count observations in treatment and control groups
+group_counts = df['treatment'].value_counts().sort_index()
+
+# Print in a readable format
+print(f"Treatment group: {group_counts[1]:,} observations")
+print(f"Control group: {group_counts[0]:,} observations")
 ```
 
-```{python, echo=TRUE, results='hide', output='asis'}
+#### Variable Testing:
+
+Below are balance tests on several pre-treatment variables: mrm2 (months since last donation), freq (number of prior donations), and hpa (highest previous donation amount). In each case, the t-test showed no statistically significant difference between treatment and control groups (p-values all > 0.05), indicating that these groups were well balanced on prior donation behavior.
+
+This aligns with the purpose of Table 1 in Karlan and List (2007), which presents a range of descriptive statistics for treatment and control groups to show that randomization created comparable samples. Reproducing this kind of analysis is essential in confirming that any differences observed in later outcomes can be confidently attributed to the experimental treatment, not to pre-existing differences between the groups.
+
+
+##### Number of months since last donation (mrm2)
+
+```{python}
+#| echo: false
 
 # Check for missing values in 'mrm2'
 df['mrm2'].isnull().sum()
@@ -142,13 +155,52 @@ df['mrm2'].isnull().sum()
 mrm2_treat = df[df['treatment'] == 1]['mrm2'].dropna()
 mrm2_ctrl = df[df['treatment'] == 0]['mrm2'].dropna()
 
-stats.ttest_ind(mrm2_treat, mrm2_ctrl, equal_var=False)
+ttest = stats.ttest_ind(mrm2_treat, mrm2_ctrl, equal_var=False)
+
+# Format and print results as a readable table
+print(f"{'Statistic':<12} {'Value'}")
+print(f"{'-'*25}")
+print(f"{'t-statistic':<12} {ttest.statistic:.4f}")
+print(f"{'p-value':<12} {ttest.pvalue:.4f}")
 ```
 
 ```{python}
+#| echo: false
 # Linear regression version: regress mrm2 on treatment
 model = smf.ols('mrm2 ~ treatment', data=df).fit()
+```
+::::{.callout-note title="Full Regression Output (Click to Expand)" collapse=true}
+```{python}
 model.summary()
+```
+::::
+
+
+##### Number of prior donations (freq)
+```{python}
+#| echo: false
+freq_treat = df[df['treatment'] == 1]['freq'].dropna()
+freq_ctrl = df[df['treatment'] == 0]['freq'].dropna()
+ttest1 = stats.ttest_ind(freq_treat, freq_ctrl, equal_var=False)
+
+print(f"{'Statistic':<12} {'Value'}")
+print(f"{'-'*25}")
+print(f"{'t-statistic':<12} {ttest1.statistic:.4f}")
+print(f"{'p-value':<12} {ttest1.pvalue:.4f}")
+```
+
+##### Highest previous contribution (hpa)
+```{python}
+#| echo: false
+hpa_treat = df[df['treatment'] == 1]['hpa'].dropna()
+hpa_ctrl = df[df['treatment'] == 0]['hpa'].dropna()
+ttest2 = stats.ttest_ind(hpa_treat, hpa_ctrl, equal_var=False)
+
+
+print(f"{'Statistic':<12} {'Value'}")
+print(f"{'-'*25}")
+print(f"{'t-statistic':<12} {ttest2.statistic:.4f}")
+print(f"{'p-value':<12} {ttest2.pvalue:.4f}")
 ```
 
 

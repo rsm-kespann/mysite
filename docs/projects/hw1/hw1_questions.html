@@ -238,8 +238,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="data">Data</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p><em>todo: Read the data into R/Python and describe the data</em></p>
-<div id="9c378ee9" class="cell" data-execution_count="1">
+<p><em>Read the data into Python and describe the data</em></p>
+<div id="ea1d365b" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the .dta file</span></span>
@@ -404,6 +404,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>5 rows × 51 columns</p>
 </div>
+</div>
+</div>
+<div id="1c6bc7d2" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of rows and columns</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>(50083, 51)</code></pre>
 </div>
 </div>
 <div class="callout callout-style-simple callout-note no-icon callout-titled">
@@ -644,6 +651,194 @@ Variable Definitions
 <h3 class="anchored" data-anchor-id="balance-test">Balance Test</h3>
 <p>As an ad hoc test of the randomization mechanism, I provide a series of tests that compare aspects of the treatment and control groups to assess whether they are statistically significantly different from one another.</p>
 <p><em>todo: test a few variables other than the key outcome variables (for example, test months since last donation) to see if the treatment and control groups are statistically significantly different at the 95% confidence level. For at least one variable, perform the test as both t-test (use the formula in the class slides) and separately as a linear regression (regress for example mrm2 on treatment); confirm both methods yield the exact same results. It might be helpful to compare parts of your analysis to Table 1 in the paper. Be sure to comment on your results (hint: why is Table 1 included in the paper).</em></p>
+<div id="d7b235c4" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-stdout">
+<pre><code>Treatment group: 33,396 observations
+Control group: 16,687 observations</code></pre>
+</div>
+</div>
+<section id="variable-testing" class="level4">
+<h4 class="anchored" data-anchor-id="variable-testing">Variable Testing:</h4>
+<p>To verify the integrity of the experimental randomization, I performed balance tests on several pre-treatment variables: mrm2 (months since last donation), freq (number of prior donations), and hpa (highest previous donation amount). In each case, the t-test showed no statistically significant difference between treatment and control groups (p-values all &gt; 0.05), indicating that these groups were well balanced on prior donation behavior.</p>
+<p>This aligns with the purpose of Table 1 in Karlan and List (2007), which presents a range of descriptive statistics for treatment and control groups to show that randomization created comparable samples. Reproducing this kind of analysis is essential in confirming that any differences observed in later outcomes can be confidently attributed to the experimental treatment, not to pre-existing differences between the groups.</p>
+<p>See stat results below.</p>
+<section id="number-of-months-since-last-donation-mrm2" class="level5">
+<h5 class="anchored" data-anchor-id="number-of-months-since-last-donation-mrm2">Number of months since last donation (mrm2)</h5>
+<div id="f97e1e14" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-stdout">
+<pre><code>Statistic    Value
+-------------------------
+t-statistic  0.1195
+p-value      0.9049</code></pre>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note no-icon callout-titled" title="Full Regression Output (Click to Expand)">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Full Regression Output (Click to Expand)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="83adcdbb" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>OLS Regression Results</caption>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dep. Variable:</td>
+<td>mrm2</td>
+<td data-quarto-table-cell-role="th">R-squared:</td>
+<td>0.000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Model:</td>
+<td>OLS</td>
+<td data-quarto-table-cell-role="th">Adj. R-squared:</td>
+<td>-0.000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Method:</td>
+<td>Least Squares</td>
+<td data-quarto-table-cell-role="th">F-statistic:</td>
+<td>0.01428</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Date:</td>
+<td>Wed, 23 Apr 2025</td>
+<td data-quarto-table-cell-role="th">Prob (F-statistic):</td>
+<td>0.905</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Time:</td>
+<td>15:30:49</td>
+<td data-quarto-table-cell-role="th">Log-Likelihood:</td>
+<td>-1.9585e+05</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">No. Observations:</td>
+<td>50082</td>
+<td data-quarto-table-cell-role="th">AIC:</td>
+<td>3.917e+05</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Df Residuals:</td>
+<td>50080</td>
+<td data-quarto-table-cell-role="th">BIC:</td>
+<td>3.917e+05</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Df Model:</td>
+<td>1</td>
+<td data-quarto-table-cell-role="th"></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Covariance Type:</td>
+<td>nonrobust</td>
+<td data-quarto-table-cell-role="th"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+<table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td></td>
+<td data-quarto-table-cell-role="th">coef</td>
+<td data-quarto-table-cell-role="th">std err</td>
+<td data-quarto-table-cell-role="th">t</td>
+<td data-quarto-table-cell-role="th">P&gt;|t|</td>
+<td data-quarto-table-cell-role="th">[0.025</td>
+<td data-quarto-table-cell-role="th">0.975]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Intercept</td>
+<td>12.9981</td>
+<td>0.094</td>
+<td>138.979</td>
+<td>0.000</td>
+<td>12.815</td>
+<td>13.181</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">treatment</td>
+<td>0.0137</td>
+<td>0.115</td>
+<td>0.119</td>
+<td>0.905</td>
+<td>-0.211</td>
+<td>0.238</td>
+</tr>
+</tbody>
+</table>
+
+
+<table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Omnibus:</td>
+<td>8031.352</td>
+<td data-quarto-table-cell-role="th">Durbin-Watson:</td>
+<td>2.004</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Prob(Omnibus):</td>
+<td>0.000</td>
+<td data-quarto-table-cell-role="th">Jarque-Bera (JB):</td>
+<td>12471.135</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Skew:</td>
+<td>1.163</td>
+<td data-quarto-table-cell-role="th">Prob(JB):</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Kurtosis:</td>
+<td>3.751</td>
+<td data-quarto-table-cell-role="th">Cond. No.</td>
+<td>3.23</td>
+</tr>
+</tbody>
+</table>
+<br><br>Notes:<br>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="number-of-prior-donations-freq" class="level5">
+<h5 class="anchored" data-anchor-id="number-of-prior-donations-freq">Number of prior donations (freq)</h5>
+<div id="ed7f5464" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-stdout">
+<pre><code>Statistic    Value
+-------------------------
+t-statistic  -0.1108
+p-value      0.9117</code></pre>
+</div>
+</div>
+</section>
+<section id="highest-previous-contribution-hpa" class="level5">
+<h5 class="anchored" data-anchor-id="highest-previous-contribution-hpa">Highest previous contribution (hpa)</h5>
+<div id="65aa855f" class="cell" data-execution_count="8">
+<div class="cell-output cell-output-stdout">
+<pre><code>Statistic    Value
+-------------------------
+t-statistic  0.9704
+p-value      0.3318</code></pre>
+</div>
+</div>
+</section>
+</section>
 </section>
 </section>
 <section id="experimental-results" class="level2">
