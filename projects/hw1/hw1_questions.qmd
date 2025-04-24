@@ -382,6 +382,7 @@ _todo: Calculate a t-test or run a bivariate linear regression of the donation a
 #### Unconditional Donation Amounts by Treatment Group
 
 ```{python}
+#| echo: false
 # T-test: donation amount (includes zeros)
 amount_treat = df[df['treatment'] == 1]['amount'].dropna()
 amount_ctrl = df[df['treatment'] == 0]['amount'].dropna()
@@ -397,6 +398,7 @@ print(f"P-value:        {ttest_amount.pvalue:.4f}")
 ```
 
 ```{python}
+#| echo: false
 # Regression: amount ~ treatment (includes zeros)
 import statsmodels.formula.api as smf
 
@@ -414,6 +416,7 @@ _todo: now limit the data to just people who made a donation and repeat the prev
 
 Among the people who gave money, did those in the treatment group donate significantly more than those in the control group?
 ```{python}
+#| echo: false
 # Filter to only donors
 donors_df = df[df['amount'] > 0]
 
