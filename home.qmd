@@ -8,6 +8,8 @@ about:
           href: mailto:kespann@ucsd.edu
         - icon: linkedin
           href: https://www.linkedin.com/in/kennedy-s-ucsd/
+        - icon: github
+          href: https://github.com/rsm-kespann 
 ---
 
 Welcome to my website!  
