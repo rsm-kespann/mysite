@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Kennedy Spann">
-<meta name="dcterms.date" content="2025-04-23">
+<meta name="dcterms.date" content="2025-04-25">
 
 <title>A Replication of Karlan and List (2007) – Kennedy Spann</title>
 <style>
@@ -213,7 +213,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 23, 2025</p>
+      <p class="date">April 25, 2025</p>
     </div>
   </div>
   
@@ -261,16 +261,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="data">Data</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p><em>Read the data into Python and describe the data</em></p>
-<div id="94ca8c94" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the .dta file</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_stata(<span class="st">"karlan_list_2007.dta"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the first few rows</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="39">
+<p>Brief snapshot of the data:</p>
+<div id="2cd178c0" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
 
@@ -429,11 +422,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="785024aa" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of rows and columns</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="40">
-<pre><code>(50083, 51)</code></pre>
+<div id="8ecb2d71" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of rows: 50083, Number of columns: 51</code></pre>
 </div>
 </div>
 <div class="callout callout-style-simple callout-note no-icon callout-titled">
@@ -673,7 +664,7 @@ Variable Definitions
 <section id="balance-test" class="level3">
 <h3 class="anchored" data-anchor-id="balance-test">Balance Test</h3>
 <p>As an ad hoc test of the randomization mechanism, I provide a series of tests that compare aspects of the treatment and control groups to assess whether they are statistically significantly different from one another.</p>
-<div id="e199edcd" class="cell" data-execution_count="3">
+<div id="840b0b38" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-stdout">
 <pre><code>Treatment group: 33,396 observations
 Control group: 16,687 observations</code></pre>
@@ -681,11 +672,17 @@ Control group: 16,687 observations</code></pre>
 </div>
 <section id="variable-testing" class="level4">
 <h4 class="anchored" data-anchor-id="variable-testing">Variable Testing:</h4>
-<p>Below are balance tests on several pre-treatment variables: mrm2 (months since last donation), freq (number of prior donations), and hpa (highest previous donation amount). In each case, the t-test showed no statistically significant difference between treatment and control groups (p-values all &gt; 0.05), indicating that these groups were well balanced on prior donation behavior.</p>
+<p>Below are balance tests on several pre-treatment variables:</p>
+<ul>
+<li><code>mrm2</code> (months since last donation) - regression also included</li>
+<li><code>freq</code> (number of prior donations)</li>
+<li><code>hpa</code> (highest previous donation amount).</li>
+</ul>
+<p><em>In each case, the t-test showed no statistically significant difference between treatment and control groups (p-values all &gt; 0.05), indicating that these groups were well balanced on prior donation behavior.</em></p>
 <p>This aligns with the purpose of Table 1 in Karlan and List (2007), which presents a range of descriptive statistics for treatment and control groups to show that randomization created comparable samples. Reproducing this kind of analysis is essential in confirming that any differences observed in later outcomes can be confidently attributed to the experimental treatment, not to pre-existing differences between the groups.</p>
 <section id="number-of-months-since-last-donation-mrm2" class="level5">
 <h5 class="anchored" data-anchor-id="number-of-months-since-last-donation-mrm2">Number of months since last donation (mrm2)</h5>
-<div id="74bda8de" class="cell" data-execution_count="4">
+<div id="5ec412aa" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-stdout">
 <pre><code>Statistic    Value
 -------------------------
@@ -705,9 +702,9 @@ Full Regression Output (Click to Expand)
 </div>
 <div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="cc7487e3" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="44">
+<div id="a0325dad" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
 <table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>OLS Regression Results</caption>
 <tbody>
@@ -731,13 +728,13 @@ Full Regression Output (Click to Expand)
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">Date:</td>
-<td>Wed, 23 Apr 2025</td>
+<td>Fri, 25 Apr 2025</td>
 <td data-quarto-table-cell-role="th">Prob (F-statistic):</td>
 <td>0.905</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>19:00:08</td>
+<td>11:57:12</td>
 <td data-quarto-table-cell-role="th">Log-Likelihood:</td>
 <td>-1.9585e+05</td>
 </tr>
@@ -839,7 +836,7 @@ Full Regression Output (Click to Expand)
 </section>
 <section id="number-of-prior-donations-freq" class="level5">
 <h5 class="anchored" data-anchor-id="number-of-prior-donations-freq">Number of prior donations (freq)</h5>
-<div id="ef7592b7" class="cell" data-execution_count="7">
+<div id="036ecbe2" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-stdout">
 <pre><code>Statistic    Value
 -------------------------
@@ -850,7 +847,7 @@ p-value      0.9117</code></pre>
 </section>
 <section id="highest-previous-contribution-hpa" class="level5">
 <h5 class="anchored" data-anchor-id="highest-previous-contribution-hpa">Highest previous contribution (hpa)</h5>
-<div id="9d7cb2c7" class="cell" data-execution_count="8">
+<div id="f983f5bf" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>Statistic    Value
 -------------------------
@@ -866,8 +863,8 @@ p-value      0.3318</code></pre>
 <h2 class="anchored" data-anchor-id="experimental-results">Experimental Results</h2>
 <section id="charitable-contribution-made" class="level3">
 <h3 class="anchored" data-anchor-id="charitable-contribution-made">Charitable Contribution Made</h3>
-<p>First, I analyze whether matched donations lead to an increased response rate of making a donation.</p>
-<div id="21d9e79b" class="cell" data-execution_count="9">
+<p>First, I analyzed whether matched donations lead to an increased response rate of making a donation.</p>
+<div id="59ae17ad" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -877,7 +874,7 @@ p-value      0.3318</code></pre>
 </div>
 </div>
 <p>A statistical comparison using a t-test showed that this difference is <strong>statistically significant</strong>, with a p-value of <strong>0.013</strong>:</p>
-<div id="a1ae10b2" class="cell" data-execution_count="10">
+<div id="45ecd3b9" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>Statistic    Value
 -------------------------
@@ -885,17 +882,17 @@ t-statistic  3.2095
 p-value      0.0013</code></pre>
 </div>
 </div>
-<p>In plain terms, this means that the difference in donation behavior is <strong>unlikely to be due to chance</strong>.</p>
+<p>In plain terms, this means that the difference in donation behavior (larger in the treatment group) is <strong>unlikely to be due to chance</strong>.</p>
 <p>Even though the financial difference is small, simply <strong>framing a donation opportunity with a matching offer</strong> significantly increased the likelihood that people would give. This supports the idea that donors respond not just to financial incentives, but to <strong>social framing and perceived impact</strong>. When people feel their donation is part of something larger — like a matching challenge — they may be more likely to act.</p>
 <section id="probit-regression" class="level5">
 <h5 class="anchored" data-anchor-id="probit-regression">Probit Regression:</h5>
-<div id="3ce856ab" class="cell" data-execution_count="11">
+<div id="87ce4069" class="cell" data-execution_count="11">
 <div class="cell-output cell-output-stdout">
 <pre><code>Optimization terminated successfully.
          Current function value: 0.100443
          Iterations 7</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="49">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>Probit Regression Results</caption>
 <tbody>
@@ -919,13 +916,13 @@ p-value      0.0013</code></pre>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">Date:</td>
-<td>Wed, 23 Apr 2025</td>
+<td>Fri, 25 Apr 2025</td>
 <td data-quarto-table-cell-role="th">Pseudo R-squ.:</td>
 <td>0.0009783</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>19:00:09</td>
+<td>11:57:12</td>
 <td data-quarto-table-cell-role="th">Log-Likelihood:</td>
 <td>-5030.5</td>
 </tr>
@@ -978,60 +975,54 @@ p-value      0.0013</code></pre>
 </table>
 </div>
 </div>
-<p>What does the probit regression tell us? The positive coefficent (.0868) and statistically significant (z = 3.11, p = 0.002) which means <strong>the treatment increased the liklihood of donation</strong></p>
+<p><em>What does the probit regression tell us?</em></p>
+<p>The positive coefficent (.0868) and statistically significant (z = 3.11, p = 0.002) which means <strong>the treatment increased the liklihood of donation</strong></p>
 <p><em>NOTE: Linear regression results appear replicate Table 3 column 1 in the paper. Probit results do not, despite Table 3 indicating its results come from probit regressions…</em></p>
 </section>
 </section>
 <section id="differences-between-match-rates" class="level3">
 <h3 class="anchored" data-anchor-id="differences-between-match-rates">Differences between Match Rates</h3>
-<p>Next, I assess the effectiveness of different sizes of matched donations on the response rate.</p>
-<p><em>todo: Use a series of t-tests to test whether the size of the match ratio has an effect on whether people donate or not. For example, does the 2:1 match rate lead increase the likelihood that someone donates as compared to the 1:1 match rate? Do your results support the “figures suggest” comment the authors make on page 8?</em></p>
+<p>Next, I assessed the effectiveness of different sizes of matched donations on the response rate.</p>
 <section id="t-test-results" class="level4">
 <h4 class="anchored" data-anchor-id="t-test-results">T-Test Results</h4>
-<div id="a52b2362" class="cell" data-execution_count="12">
-<div class="cell-output cell-output-display" data-execution_count="50">
-<div>
+<div id="566c7038" class="cell" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="12">
+<style type="text/css">
+</style>
 
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table id="T_179a2" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">Comparison</th>
-<th data-quarto-table-cell-role="th">t-statistic</th>
-<th data-quarto-table-cell-role="th">p-value</th>
+<th id="T_179a2_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Comparison</th>
+<th id="T_179a2_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">t-statistic</th>
+<th id="T_179a2_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">p-value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>1:1 vs 2:1</td>
-<td>-0.9650</td>
-<td>0.3345</td>
+<td id="T_179a2_row0_col0" class="data row0 col0">1:1 vs 2:1</td>
+<td id="T_179a2_row0_col1" class="data row0 col1">-0.965000</td>
+<td id="T_179a2_row0_col2" class="data row0 col2">0.334500</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>2:1 vs 3:1</td>
-<td>-0.0501</td>
-<td>0.9600</td>
+<td id="T_179a2_row1_col0" class="data row1 col0">2:1 vs 3:1</td>
+<td id="T_179a2_row1_col1" class="data row1 col1">-0.050100</td>
+<td id="T_179a2_row1_col2" class="data row1 col2">0.960000</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>1:1 vs 3:1</td>
-<td>-1.0150</td>
-<td>0.3101</td>
+<td id="T_179a2_row2_col0" class="data row2 col0">1:1 vs 3:1</td>
+<td id="T_179a2_row2_col1" class="data row2 col1">-1.015000</td>
+<td id="T_179a2_row2_col2" class="data row2 col2">0.310100</td>
 </tr>
 </tbody>
 </table>
-
-</div>
 </div>
 </div>
 </section>
 <section id="regression-on-explicit-match-ratio-dummies" class="level4">
 <h4 class="anchored" data-anchor-id="regression-on-explicit-match-ratio-dummies">Regression on Explicit Match Ratio Dummies</h4>
-<div id="67087cdb" class="cell" data-execution_count="13">
-<div class="cell-output cell-output-display" data-execution_count="51">
+<div id="ca0bdb80" class="cell" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 
 
@@ -1092,7 +1083,7 @@ p-value      0.0013</code></pre>
 </section>
 <section id="response-rate-differences" class="level4">
 <h4 class="anchored" data-anchor-id="response-rate-differences">Response Rate Differences:</h4>
-<div id="83ab9b76" class="cell" data-execution_count="14">
+<div id="85d697aa" class="cell" data-execution_count="14">
 <div class="cell-output cell-output-stdout">
 <pre><code>1:1 donation rate: 2.0749%
 2:1 donation rate: 2.2633%
@@ -1101,7 +1092,7 @@ Difference (2:1 - 1:1): 0.1884%
 Difference (3:1 - 2:1): 0.0100%</code></pre>
 </div>
 </div>
-<div id="c4dfd583" class="cell" data-execution_count="15">
+<div id="14055a64" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-stdout">
 <pre><code>Regression: Difference (2:1 - 1:1): 0.1884%
 Regression: Difference (3:1 - 2:1): 0.0100%</code></pre>
@@ -1113,10 +1104,9 @@ Regression: Difference (3:1 - 2:1): 0.0100%</code></pre>
 <section id="size-of-charitable-contribution" class="level3">
 <h3 class="anchored" data-anchor-id="size-of-charitable-contribution">Size of Charitable Contribution</h3>
 <p>In this subsection, I analyze the effect of the size of matched donation on the size of the charitable contribution.</p>
-<p><em>todo: Calculate a t-test or run a bivariate linear regression of the donation amount on the treatment status. What do we learn from doing this analysis?</em></p>
 <section id="unconditional-donation-amounts-by-treatment-group" class="level4">
 <h4 class="anchored" data-anchor-id="unconditional-donation-amounts-by-treatment-group">Unconditional Donation Amounts by Treatment Group</h4>
-<div id="7546c8e7" class="cell" data-execution_count="16">
+<div id="ac399359" class="cell" data-execution_count="16">
 <div class="cell-output cell-output-stdout">
 <pre><code>Treatment mean: $0.97
 Control mean:   $0.81
@@ -1124,8 +1114,8 @@ T-statistic:    1.9183
 P-value:        0.0551</code></pre>
 </div>
 </div>
-<div id="6c544125" class="cell" data-execution_count="17">
-<div class="cell-output cell-output-display" data-execution_count="55">
+<div id="e9675ba8" class="cell" data-execution_count="17">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>OLS Regression Results</caption>
 <tbody>
@@ -1149,13 +1139,13 @@ P-value:        0.0551</code></pre>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">Date:</td>
-<td>Wed, 23 Apr 2025</td>
+<td>Fri, 25 Apr 2025</td>
 <td data-quarto-table-cell-role="th">Prob (F-statistic):</td>
 <td>0.0628</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>19:00:09</td>
+<td>11:57:12</td>
 <td data-quarto-table-cell-role="th">Log-Likelihood:</td>
 <td>-1.7946e+05</td>
 </tr>
@@ -1253,13 +1243,12 @@ P-value:        0.0551</code></pre>
 </div>
 <p>The control group gave an average donation amount of <strong>$0.81</strong>, while the treatment group gave on average <strong>$0.97</strong>, which was a significant difference.</p>
 <p>The linear regression shows a coefficent of $0.16, confirming overall revenue gain from the treatment.</p>
-<p><em>todo: now limit the data to just people who made a donation and repeat the previous analysis. This regression allows you to analyze how much respondents donate conditional on donating some positive amount. Interpret the regression coefficients – what did we learn? Does the treatment coefficient have a causal interpretation?</em></p>
 </section>
 <section id="conditional-analysis" class="level4">
 <h4 class="anchored" data-anchor-id="conditional-analysis">Conditional Analysis:</h4>
 <p>Among the people who gave money, did those in the treatment group donate significantly more than those in the control group?</p>
-<div id="bd484945" class="cell" data-execution_count="18">
-<div class="cell-output cell-output-display" data-execution_count="56">
+<div id="12d047d3" class="cell" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <table class="simpletable caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>OLS Regression Results</caption>
 <tbody>
@@ -1283,13 +1272,13 @@ P-value:        0.0551</code></pre>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">Date:</td>
-<td>Wed, 23 Apr 2025</td>
+<td>Fri, 25 Apr 2025</td>
 <td data-quarto-table-cell-role="th">Prob (F-statistic):</td>
 <td>0.561</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">Time:</td>
-<td>19:00:09</td>
+<td>11:57:12</td>
 <td data-quarto-table-cell-role="th">Log-Likelihood:</td>
 <td>-5326.8</td>
 </tr>
@@ -1385,13 +1374,12 @@ P-value:        0.0551</code></pre>
 <br><br>Notes:<br>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
 </div>
 </div>
-<p>No, the treatment did not increase donation size among donars, we cannot claim this as a causal effect in the same way we can from the response rate and unconditonal amount analyses.</p>
-<p><em>todo: Make two plots: one for the treatment group and one for the control. Each plot should be a histogram of the donation amounts only among people who donated. Add a red vertical bar or some other annotation to indicate the sample average for each plot.</em></p>
+<p><em><strong>No</strong>, the treatment did not increase donation size among donars, we cannot claim this as a causal effect in the same way we can from the response rate and unconditonal amount analyses.</em></p>
 </section>
 </section>
 <section id="distribution-of-donation-amounts-among-donors" class="level3">
 <h3 class="anchored" data-anchor-id="distribution-of-donation-amounts-among-donors">Distribution of Donation Amounts Among Donors</h3>
-<div id="1352f1bd" class="cell" data-execution_count="19">
+<div id="2e183e7d" class="cell" data-execution_count="19">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1407,13 +1395,38 @@ P-value:        0.0551</code></pre>
 <p>As a reminder of how the t-statistic “works,” in this section I use simulation to demonstrate the Law of Large Numbers and the Central Limit Theorem.</p>
 <p>Suppose the true distribution of respondents who do not get a charitable donation match is Bernoulli with probability p=0.018 that a donation is made.</p>
 <p>Further suppose that the true distribution of respondents who do get a charitable donation match of any size is Bernoulli with probability p=0.022 that a donation is made.</p>
+<div id="74b1b4d3" class="cell" data-execution_count="20">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw1_questions_files/figure-html/cell-21-output-1.png" width="949" height="468" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 <section id="law-of-large-numbers" class="level3">
 <h3 class="anchored" data-anchor-id="law-of-large-numbers">Law of Large Numbers</h3>
-<p><em>to do: Simulate 10,000 draws from the control distribution and 10,000 draws from the treatment distribution. You’ll then calculate a vector of 10,000 differences, and then you’ll plot the cumulative average of that vector of differences. This average will likely be “noisey” when only averaging a few numbers, but should “settle down” and approximate the treatment effect (0.004 = 0.022 - 0.018) as the sample size gets large. Explain the chart to the reader.</em></p>
+<div id="3f2b96cf" class="cell" data-execution_count="21">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw1_questions_files/figure-html/cell-22-output-1.png" width="949" height="468" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="central-limit-theorem" class="level3">
 <h3 class="anchored" data-anchor-id="central-limit-theorem">Central Limit Theorem</h3>
-<p><em>to do: Make 4 histograms at sample sizes 50, 200, 500, and 1000. To do this for a sample size of e.g.&nbsp;50, take 50 draws from each of the control and treatment distributions, and calculate the average difference between those draws. Then repeat that process 999 more times so that you have 1000 averages. Plot the histogram of those averages. The repeat for the other 3 histograms. Explain this sequence of histograms and its relationship to the central limit theorem to the reader.</em></p>
+<div id="7dca9b2f" class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw1_questions_files/figure-html/cell-23-output-1.png" width="1719" height="372" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>
