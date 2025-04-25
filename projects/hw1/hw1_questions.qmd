@@ -180,12 +180,20 @@ print(f"{'p-value':<12} {ttest.pvalue:.4f}")
 #| echo: false
 # Linear regression version: regress mrm2 on treatment
 model = smf.ols('mrm2 ~ treatment', data=df).fit()
+
+ols_table = pd.DataFrame({
+    "Term": model.params.index,
+    "Coefficient": model.params.values,
+    "Std. Error": model.bse.values,
+    "t-value": model.tvalues.values,
+    "p-value": model.pvalues.values,
+    "95% CI Lower": model.conf_int()[0].values,
+    "95% CI Upper": model.conf_int()[1].values
+}).round(4).reset_index(drop=True)
+
+ols_table
 ```
-::::{.callout-note title="Full Regression Output (Click to Expand)" collapse=true}
-```{python}
-model.summary()
-```
-::::
+
 
 
 ##### Number of prior donations (freq)
@@ -259,12 +267,26 @@ In plain terms, this means that the difference in donation behavior (larger in t
  Even though the financial difference is small, simply **framing a donation opportunity with a matching offer** significantly increased the likelihood that people would give. This supports the idea that donors respond not just to financial incentives, but to **social framing and perceived impact**. When people feel their donation is part of something larger — like a matching challenge — they may be more likely to act.
 
 ##### Probit Regression:
+### Probit Regression: Effect of Treatment on Giving
+
 ```{python}
-#|echo: false
+#| echo: false
 # Probit regression
 model_probit = smf.probit('gave ~ treatment', data=df).fit()
-model_probit.summary()
+
+probit_table = pd.DataFrame({
+    "Term": model_probit.params.index,
+    "Coefficient": model_probit.params.values,
+    "Std. Error": model_probit.bse.values,
+    "z-value": model_probit.tvalues.values,
+    "p-value": model_probit.pvalues.values,
+    "95% CI Lower": model_probit.conf_int()[0].values,
+    "95% CI Upper": model_probit.conf_int()[1].values
+}).round(4).reset_index(drop=True)
+
+probit_table
 ```
+
 
 _What does the probit regression tell us?_
 
@@ -303,7 +325,7 @@ t_test_results = pd.DataFrame({
     "Comparison": ["1:1 vs 2:1", "2:1 vs 3:1", "1:1 vs 3:1"],
     "t-statistic": [ttest_1_2.statistic, ttest_2_3.statistic, ttest_1_3.statistic],
     "p-value": [ttest_1_2.pvalue, ttest_2_3.pvalue, ttest_1_3.pvalue]
-}).round(4)
+}).round(4).reset_index(drop=True)
 
 t_test_results.style.hide(axis="index")
 ```
@@ -331,7 +353,7 @@ reg_table = pd.DataFrame({
     "95% CI Upper": [model.conf_int().loc["Intercept", 1], model.conf_int().loc["ratio2", 1], model.conf_int().loc["ratio3", 1]]
 }).round(4).reset_index(drop=True)
 
-reg_table
+reg_table.style.hide(axis="index")
 ```
 
 The **intercept** coefficient (0.0207) represents the average donation rate for individuals who received a 1:1 match offer — approximately **2.07%** of these individuals made a donation.
@@ -402,24 +424,44 @@ print(f"T-statistic:    {ttest_amount.statistic:.4f}")
 print(f"P-value:        {ttest_amount.pvalue:.4f}")
 ```
 
+
 ```{python}
 #| echo: false
 # Regression: amount ~ treatment (includes zeros)
-import statsmodels.formula.api as smf
-
 model_amount = smf.ols('amount ~ treatment', data=df).fit()
-model_amount.summary()
+
+amount_table = pd.DataFrame({
+    "Term": model_amount.params.index,
+    "Coefficient": model_amount.params.values,
+    "Std. Error": model_amount.bse.values,
+    "t-value": model_amount.tvalues.values,
+    "p-value": model_amount.pvalues.values,
+    "95% CI Lower": model_amount.conf_int()[0].values,
+    "95% CI Upper": model_amount.conf_int()[1].values
+}).round(4)
+
+amount_table.style.hide(axis="index")
 ```
 
 
-The control group gave an average donation amount of **$0.81**, while the treatment group gave on average **$0.97**, which was a significant difference.
+The control group gave an average donation amount of **$0.81**, while the treatment group gave on average **$0.15** more. However, because the p-value is greater than 0.05, this difference is not statistically significant at the 95% confidence level, and _we cannot confidently conclude that the treatment caused an increase in donation amount._
 
-The linear regression shows a coefficent of $0.16, confirming overall revenue gain from the treatment.
 
 
 #### Conditional Analysis:
 
 Among the people who gave money, did those in the treatment group donate significantly more than those in the control group?
+
+```{python}
+#| echo: false
+control_donors_count = df[(df['treatment'] == 0) & (df['amount'] > 0)].shape[0] / df[df['treatment'] == 0].shape[0]
+treatment_donors_count = df[(df['treatment'] == 1) & (df['amount'] > 0)].shape[0] / df[df['treatment'] == 1].shape[0]
+
+# Print the results
+print(f"Proportion of donors in control group: {control_donors_count * 100:.2f}%")
+print(f"Proportion of donors in treatment group: {treatment_donors_count * 100:.2f}%")
+```
+
 ```{python}
 #| echo: false
 # Filter to only donors
@@ -427,11 +469,22 @@ donors_df = df[df['amount'] > 0]
 
 # Run regression on donation amount among donors only
 model_conditional = smf.ols('amount ~ treatment', data=donors_df).fit()
-model_conditional.summary()
+
+conditional_table = pd.DataFrame({
+    "Term": model_conditional.params.index,
+    "Coefficient": model_conditional.params.values,
+    "Std. Error": model_conditional.bse.values,
+    "t-value": model_conditional.tvalues.values,
+    "p-value": model_conditional.pvalues.values,
+    "95% CI Lower": model_conditional.conf_int()[0].values,
+    "95% CI Upper": model_conditional.conf_int()[1].values
+}).round(4)
+
+conditional_table.style.hide(axis="index")
 ```
 
 
-_**No**, the treatment did not increase donation size among donars, we cannot claim this as a causal effect in the same way we can from the response rate and unconditonal amount analyses._ 
+When we look only at the _individuals who actually donated_, the control group gave an average of about **$45.54**, while the treatment group gave **$1.67 less** on average. However, this difference is not statistically significant (p = 0.561), and the 95% confidence interval includes zero. 
 
 
 
