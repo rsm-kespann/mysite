@@ -47,7 +47,7 @@ plt.show()
 
 Blueprinty customers are not selected at random. It may be important to account for systematic differences in the age and regional location of customers vs non-customers.
 
-_todo: Compare regions and ages by customer status. What do you observe?_
+_Compare regions and ages by customer status_
 ```{python}
 #|echo: false
 # Compare regions by customer status
@@ -56,11 +56,12 @@ print(region_counts)
 ```
 
 ```{python}
-#|echo: false
-# Compare ages by customer status
-age_stats = blue.groupby('iscustomer')['age'].describe()
+#| echo: false
+# Compare ages by customer status (suppress FutureWarning)
+age_stats = blue.groupby('iscustomer', observed=False)['age'].describe()
 print(age_stats)
 ```
+
 
 ```{python}
 #|echo: false
@@ -122,7 +123,7 @@ plt.show()
 
 ```
 
-From histogram we can see higher level of customers in the Northeast region, age seems to be fairly constant between regions, to confirm these inital assumptions I ran a logistic regression:
+From this histogram we can see higher level of customers in the Northeast region, age seems to be fairly constant between regions, and to confirm these inital assumptions a logistic regression was run:
 
 ```{python}
 import pyrsm as rsm
@@ -170,11 +171,8 @@ $$
 $$
 
 
-
-_todo: Code the likelihood (or log-likelihood) function for the Poisson model. This is a function of lambda and Y. For example:_
-
 ``` {python}
-
+#| echo: false
 def poisson_log_likelihood(lam, y):
     y = np.array(y)
     if lam <= 0:
@@ -184,13 +182,24 @@ def poisson_log_likelihood(lam, y):
     return np.sum(y * np.log(lam) - lam - log_fact_y)
 ```
 
-_todo: Use your function to plot lambda on the horizontal axis and the likelihood (or log-likelihood) on the vertical axis for a range of lambdas (use the observed number of patents as the input for Y)._
+_Plot of lambda on the horizontal axis and the likelihood (or log-likelihood) on the vertical axis for a range of lambdas (use the observed number of patents as the input for Y)._
 
 ```{python}
-import numpy as np 
+#| echo: false
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.special import gammaln
 
 # Extract the observed patent counts
 y_obs = blue['patents'].values
+
+# Updated Poisson log-likelihood function
+def poisson_log_likelihood(lam, y):
+    if lam <= 0:
+        return -np.inf
+    y = np.array(y)
+    log_fact_y = gammaln(y + 1)  # replaces log(factorial(y))
+    return np.sum(y * np.log(lam) - lam - log_fact_y)
 
 # Create a range of lambda values
 lambda_vals = np.linspace(0.1, 10, 100)
@@ -205,6 +214,7 @@ plt.title('Poisson Log-Likelihood Across Lambda Values')
 plt.grid(True)
 plt.show()
 ```
+
 
 ## Deriving the MLE for the Poisson Distribution
 
@@ -233,47 +243,231 @@ $$
 $$
 
 
-_todo: Find the MLE by optimizing your likelihood function with optim() in R or sp.optimize() in Python._
-
 ```{python}
+#| echo: false
 from scipy.optimize import minimize_scalar
+from scipy.special import gammaln
+import numpy as np
 
 # Define the negative log-likelihood function
 def neg_poisson_log_likelihood(lam):
     if lam <= 0:
         return np.inf
-    log_fact_y = np.array([np.log(np.math.factorial(yi)) for yi in y_obs])
+    log_fact_y = gammaln(y_obs + 1)  # vectorized and warning-free
     return -np.sum(y_obs * np.log(lam) - lam - log_fact_y)
 
-# Use scipy.optimize to find the lambda that minimizes the negative log-likelihood
+# Optimize to find lambda MLE
 result = minimize_scalar(neg_poisson_log_likelihood, bounds=(0.1, 10), method='bounded')
 
-# Show the MLE for lambda
+# Print result
 lambda_mle_optim = result.x
-print(f"Lambda MLE from optimization: {lambda_mle_optim:.4f}")
+# print(f"Lambda MLE from optimization: {lambda_mle_optim:.4f}")
 ```
 
+**Lamda MLE from optimization: 3.6847**
 
 ### Estimation of Poisson Regression Model
 
 Next, we extend our simple Poisson model to a Poisson Regression Model such that $Y_i = \text{Poisson}(\lambda_i)$ where $\lambda_i = \exp(X_i'\beta)$. The interpretation is that the success rate of patent awards is not constant across all firms ($\lambda$) but rather is a function of firm characteristics $X_i$. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.
 
-_todo: Update your likelihood or log-likelihood function with an additional argument to take in a covariate matrix X. Also change the parameter of the model from lambda to the beta vector. In this model, lambda must be a positive number, so we choose the inverse link function g_inv() to be exp() so that_ $\lambda_i = e^{X_i'\beta}$. _For example:_
+_Below is an **updated likelihood or log-likelihood function** with an additional argument to take in a covariate matrix X. Also the parameter of the model has changed from lambda to the beta vector. In this model, lambda must be a positive number, so we choose the inverse link function g_inv() to be exp() so that_ $\lambda_i = e^{X_i'\beta}$. 
+
+```{python}
+#| echo: false
+
+def poisson_regression_log_likelihood(beta, y, X):
+    """
+    Compute the log-likelihood of a Poisson regression model.
+
+    Parameters:
+    - beta: 1D array of coefficients (length = number of features)
+    - y: array-like of observed counts
+    - X: 2D array-like design matrix (n_samples x n_features)
+
+    Returns:
+    - log-likelihood (scalar)
+    """
+    beta = np.array(beta)
+    y = np.array(y)
+    X = np.array(X)
+
+    # Linear predictor and inverse link function
+    eta = X @ beta                   # Xβ
+    lam = np.exp(eta)               # λ = exp(Xβ)
+
+    # Log-likelihood
+    log_fact_y = np.array([np.log(np.math.factorial(yi)) for yi in y])
+    log_lik = np.sum(y * np.log(lam) - lam - log_fact_y)
+
+    return log_lik
+```
+
+
+```{python}
+#| echo: false
+import pandas as pd
+import numpy as np
+from scipy.optimize import minimize
+from scipy.special import gammaln
+from numpy.linalg import inv
+
+# Standardize age and create age squared
+blue['age_std'] = (blue['age'] - blue['age'].mean()) / blue['age'].std()
+blue['age_squared'] = blue['age_std'] ** 2
+
+# Create region dummies
+region_dummies = pd.get_dummies(blue['region'], drop_first=True)
+
+# Design matrix
+X_df = pd.concat([
+    pd.Series(1, index=blue.index, name='intercept'),
+    blue[['age_std', 'age_squared']],
+    region_dummies,
+    blue[['iscustomer']]
+], axis=1)
+
+# Convert to numpy arrays
+X = X_df.to_numpy(dtype=np.float64)
+y = blue['patents'].to_numpy(dtype=np.float64)
+
+# Poisson regression negative log-likelihood
+def poisson_regression_log_likelihood(beta, y, X):
+    beta = np.asarray(beta, dtype=np.float64)
+    eta = X @ beta
+
+    # Prevent overflow in exp
+    eta = np.clip(eta, -100, 100)
+    lam = np.exp(eta)
+
+    log_fact_y = gammaln(y + 1)
+    return -np.sum(y * np.log(lam) - lam - log_fact_y)
+
+# Initial guess
+init_beta = np.zeros(X.shape[1])
+
+# Minimize negative log-likelihood
+result = minimize(poisson_regression_log_likelihood, init_beta, args=(y, X), method='BFGS')
+
+# Extract estimates and standard errors
+beta_hat = result.x
+hessian_inv = result.hess_inv
+if not isinstance(hessian_inv, np.ndarray):
+    hessian_inv = hessian_inv.todense()
+standard_errors = np.sqrt(np.diag(hessian_inv))
+
+# Coefficient summary
+coef_names = ['Intercept', 'Age (std)', 'Age^2 (std)'] + list(region_dummies.columns) + ['Customer']
+coef_table = pd.DataFrame({
+    'Coefficient': beta_hat,
+    'Std. Error': standard_errors
+}, index=coef_names)
+
+# Display result
+print(coef_table.round(4))
+```
+
+
+_Checked results using Python sm.GLM() function._
+
+```{python}
+#| echo: false
+import pandas as pd
+import numpy as np
+import statsmodels.api as sm
+
+# Load dataset
+blue = pd.read_csv("blueprinty.csv")
+
+# Standardize age and create squared term
+blue['age_std'] = (blue['age'] - blue['age'].mean()) / blue['age'].std()
+blue['age_squared'] = blue['age_std'] ** 2
+
+# Create region dummies
+region_dummies = pd.get_dummies(blue['region'], drop_first=True)
+
+# Construct design matrix
+X_df = pd.concat([
+    blue[['age_std', 'age_squared']],
+    region_dummies,
+    blue[['iscustomer']]
+], axis=1)
+
+# Add intercept
+X_df = sm.add_constant(X_df)
+
+# 🔧 Ensure all predictors are numeric
+X_df = X_df.astype(float)
+
+# Define response
+y = blue['patents']
+
+# Fit GLM Poisson model
+poisson_model = sm.GLM(y, X_df, family=sm.families.Poisson())
+poisson_results = poisson_model.fit()
+
+# Display results
+print(poisson_results.summary())
 
 ```
-poisson_regression_likelihood <- function(beta, Y, X){
-   ...
-}
+
+
+#### Results  
+
+_Each coefficient represents the log-change in the expected count per unit change in that variable._
+
+**🔹 Intercept = 1.3447**
+→ When all variables are 0 (e.g., average age, non-customer, reference region), expected log-patents ≈ 1.34 → patents ≈ exp(1.3447) ≈ 3.84
+
+**🔹 Customer = 0.2076**
+→ Being a customer is associated with a +0.2076 increase in log-patents
+→ That’s about 23% more patents
+
+**🔹 Age (std) = -0.0577, Age² (std) = -0.1558**
+→ Slight negative linear and stronger negative quadratic effect of age
+→ Implies patents peak at middle age and drop off for older firms
+
+**🔹 Regions: all relatively small effects; not statistically strong without p-values, but hint at mild differences**
+
+
+_So what is the conslusion of the effect of Blueprinty's software on patent success?_
+
+- Created two fake datasets: X_0 and X_1 where X_0 is the X data but with iscustomer=0 for every observation and X_1 is the X data but with iscustomer=1 for every observation. Then, used X_0 and your fitted model to get the vector of predicted number of patents (y_pred_0) for every firm in the dataset, and use X_1 to get Y_pred_1 for every firm. Then subtracted y_pred_1 minus y_pred_0 and take the average of that vector of differences.
+
+```{python}
+# Get the fitted GLM model (assuming you've already run the sm.GLM Poisson model above)
+# Model: poisson_results
+# Design matrix: X_df
+
+# Create X_0 and X_1
+X_0 = X_df.copy()
+X_0['iscustomer'] = 0
+
+X_1 = X_df.copy()
+X_1['iscustomer'] = 1
+
+# Predict patent counts under both scenarios
+y_pred_0 = poisson_results.predict(X_0)
+y_pred_1 = poisson_results.predict(X_1)
+
+# Calculate the average treatment effect
+delta = y_pred_1 - y_pred_0
+average_effect = np.mean(delta)
+
+print(f"Estimated average increase in patents per firm due to Blueprinty's software: {average_effect:.4f}")
 ```
+```{python}
+#| echo: false
+import matplotlib.pyplot as plt
 
-_todo: Use your function along with R's optim() or Python's sp.optimize() to find the MLE vector and the Hessian of the Poisson model with covariates. Specifically, the first column of X should be all 1's to enable a constant term in the model, and the subsequent columns should be age, age squared, binary variables for all but one of the regions, and the binary customer variable. Use the Hessian to find standard errors of the beta parameter estimates and present a table of coefficients and standard errors._
-
-_todo: Check your results using R's glm() function or Python sm.GLM() function._
-
-_todo: Interpret the results._ 
-
-_todo: What do you conclude about the effect of Blueprinty's software on patent success? Because the beta coefficients are not directly interpretable, it may help to create two fake datasets: X_0 and X_1 where X_0 is the X data but with iscustomer=0 for every observation and X_1 is the X data but with iscustomer=1 for every observation. Then, use X_0 and your fitted model to get the vector of predicted number of patents (y_pred_0) for every firm in the dataset, and use X_1 to get Y_pred_1 for every firm. Then subtract y_pred_1 minus y_pred_0 and take the average of that vector of differences._
-
+plt.hist(delta, bins=30, color='skyblue', edgecolor='black')
+plt.title("Distribution of Predicted Patent Increases from Blueprinty's Software")
+plt.xlabel("Patent Difference (Customer - Non-Customer)")
+plt.ylabel("Number of Firms")
+plt.axvline(average_effect, color='red', linestyle='--', label=f'Mean Effect = {average_effect:.2f}')
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
 
 
 
@@ -302,10 +496,75 @@ AirBnB is a popular platform for booking short-term rentals. In March 2017, stud
 
 ::::
 
-
-_todo: Assume the number of reviews is a good proxy for the number of bookings. Perform some exploratory data analysis to get a feel for the data, handle or drop observations with missing values on relevant variables, build one or more models (e.g., a poisson regression model for the number of bookings as proxied by the number of reviews), and interpret model coefficients to describe variation in the number of reviews as a function of the variables provided._
-
+### Poisson Regression Model: Number of Bookings by Reviews
 
 
+```{python}
+#| echo: false
+# Keep only relevant columns
+
+airbnb = pd.read_csv("airbnb.csv")
+
+airbnb_clean = airbnb[[
+    'days', 'room_type', 'bathrooms', 'bedrooms', 'price',
+    'number_of_reviews', 'review_scores_cleanliness',
+    'review_scores_location', 'review_scores_value', 'instant_bookable'
+]]
+
+# Drop rows with any missing values
+airbnb_clean = airbnb_clean.dropna()
+
+# Convert room_type and instant_bookable to dummy variables
+airbnb_clean = pd.get_dummies(airbnb_clean, columns=['room_type', 'instant_bookable'], drop_first=True)
 
 
+import statsmodels.api as sm
+
+# Define predictors and response
+X = airbnb_clean.drop(columns=['number_of_reviews'])
+X = sm.add_constant(X)
+X = X.astype(float)  # ensure numeric dtype
+y = airbnb_clean['number_of_reviews']
+
+# Fit the Poisson model
+poisson_model = sm.GLM(y, X, family=sm.families.Poisson())
+poisson_results = poisson_model.fit()
+
+# Summary
+print(poisson_results.summary())
+```
+
+
+#### Interpretation of Poisson Regression Coefficients
+
+In a Poisson regression with a log-link, coefficients represent log-changes in expected number of reviews.  
+To interpret them as **percent changes**, we use the formula:
+
+$$
+\text{Percent Change} = \left( \exp(\beta) - 1 \right) \times 100
+$$
+
+---
+
+##### 📊 Effect of Listing Features on Number of Reviews
+
+| Variable                  | Coefficient (β) | % Change in Expected Reviews | Interpretation |
+|---------------------------|----------------:|-----------------------------:|----------------|
+| `instant_bookable_t`      | 0.346           | **+41%**                     | Instantly bookable listings get ~41% more reviews |
+| `room_type_Private room`  | -0.011          | **-1%**                      | Slightly fewer reviews vs. entire home |
+| `room_type_Shared room`   | -0.246          | **-22%**                     | Shared rooms get ~22% fewer reviews |
+| `bedrooms`                | 0.074           | **+7.7%**                     | Each additional bedroom → ~8% more reviews |
+| `bathrooms`               | -0.118          | **-11%**                     | Each additional bathroom → ~11% fewer reviews |
+| `price`                   | -0.000018       | ~0%                          | Slightly fewer reviews for higher prices |
+| `review_scores_cleanliness` | 0.113        | **+12%**                     | Higher cleanliness = more reviews |
+| `review_scores_location`    | -0.077        | **-7.4%**                    | Surprisingly, higher location scores → fewer reviews |
+| `review_scores_value`       | -0.091        | **-8.7%**                    | Higher value score = fewer reviews |
+| `days`                    | 0.0000507       | ~+0.005% per day             | Older listings have more reviews |
+
+---
+
+#### 🧠 Summary
+
+- The **largest positive effects** come from `instant_bookable`, `cleanliness`, and `bedrooms`.
+- **Shared rooms underperform** significantly compared to entire homes.
+- **Review score for value and location** surprisingly have small **negative** effects, possibly due to multicollinearity or confounding with price.

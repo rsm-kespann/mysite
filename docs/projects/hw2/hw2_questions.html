@@ -209,6 +209,7 @@ window.Quarto = {
   <li><a href="#airbnb-case-study" id="toc-airbnb-case-study" class="nav-link" data-scroll-target="#airbnb-case-study">AirBnB Case Study</a>
   <ul class="collapse">
   <li><a href="#introduction-1" id="toc-introduction-1" class="nav-link" data-scroll-target="#introduction-1">Introduction</a></li>
+  <li><a href="#poisson-regression-model-number-of-bookings-by-reviews" id="toc-poisson-regression-model-number-of-bookings-by-reviews" class="nav-link" data-scroll-target="#poisson-regression-model-number-of-bookings-by-reviews">Poisson Regression Model: Number of Bookings by Reviews</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -257,7 +258,7 @@ window.Quarto = {
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <p><em>Number of Patents by Customer Status</em></p>
-<div id="3c85e1e0" class="cell" data-execution_count="2">
+<div id="770c066b" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -267,8 +268,8 @@ window.Quarto = {
 </div>
 </div>
 <p>Blueprinty customers are not selected at random. It may be important to account for systematic differences in the age and regional location of customers vs non-customers.</p>
-<p><em>todo: Compare regions and ages by customer status. What do you observe?</em></p>
-<div id="66a0f6cf" class="cell" data-execution_count="3">
+<p><em>Compare regions and ages by customer status</em></p>
+<div id="18c9bd89" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-stdout">
 <pre><code>region      Midwest  Northeast  Northwest  South  Southwest
 iscustomer                                                 
@@ -276,7 +277,7 @@ iscustomer
 1                37        328         29     35         52</code></pre>
 </div>
 </div>
-<div id="ad99b135" class="cell" data-execution_count="4">
+<div id="beff40d6" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-stdout">
 <pre><code>             count       mean       std   min   25%   50%    75%   max
 iscustomer                                                            
@@ -284,15 +285,15 @@ iscustomer
 1            481.0  26.900208  7.814678  10.0  20.5  26.5  32.50  49.0</code></pre>
 </div>
 </div>
-<div id="9b784eca" class="cell" data-execution_count="6">
+<div id="aa713510" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stderr">
-<pre><code>/tmp/ipykernel_55469/2292223956.py:7: FutureWarning:
+<pre><code>/tmp/ipykernel_73381/2292223956.py:7: FutureWarning:
 
 The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
 </code></pre>
 </div>
 </div>
-<div id="e81247ec" class="cell" data-execution_count="7">
+<div id="25b52edd" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -301,8 +302,8 @@ The default of observed=False is deprecated and will be changed to True in a fut
 </div>
 </div>
 </div>
-<p>From histogram we can see higher level of customers in the Northeast region, age seems to be fairly constant between regions, to confirm these inital assumptions I ran a logistic regression:</p>
-<div id="c1a05076" class="cell" data-execution_count="8">
+<p>From this histogram we can see higher level of customers in the Northeast region, age seems to be fairly constant between regions, and to confirm these inital assumptions a logistic regression was run:</p>
+<div id="adeaea11" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyrsm <span class="im">as</span> rsm</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Run logistic regression</span></span>
@@ -373,45 +374,12 @@ L(\lambda \mid \mathbf{Y}) = e^{-n\lambda} \lambda^{\sum_{i=1}^n Y_i} \prod_{i=1
 <p><span class="math display">\[
 \log L(\lambda \mid \mathbf{Y}) = -n\lambda + \left( \sum_{i=1}^n Y_i \right) \log \lambda - \sum_{i=1}^n \log(Y_i!)
 \]</span></p>
-<p><em>todo: Code the likelihood (or log-likelihood) function for the Poisson model. This is a function of lambda and Y. For example:</em></p>
-<div id="8d125569" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> poisson_log_likelihood(lam, y):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> np.array(y)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> lam <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span>np.inf  <span class="co"># Avoid log of zero or negative lambda</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    log_fact_y <span class="op">=</span> np.array([np.log(np.math.factorial(yi)) <span class="cf">for</span> yi <span class="kw">in</span> y])</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.<span class="bu">sum</span>(y <span class="op">*</span> np.log(lam) <span class="op">-</span> lam <span class="op">-</span> log_fact_y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><em>todo: Use your function to plot lambda on the horizontal axis and the likelihood (or log-likelihood) on the vertical axis for a range of lambdas (use the observed number of patents as the input for Y).</em></p>
-<div id="a5a02bb0" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the observed patent counts</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>y_obs <span class="op">=</span> blue[<span class="st">'patents'</span>].values</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a range of lambda values</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>lambda_vals <span class="op">=</span> np.linspace(<span class="fl">0.1</span>, <span class="dv">10</span>, <span class="dv">100</span>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>log_likelihoods <span class="op">=</span> [poisson_log_likelihood(lam, y_obs) <span class="cf">for</span> lam <span class="kw">in</span> lambda_vals]</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>plt.plot(lambda_vals, log_likelihoods, color<span class="op">=</span><span class="st">'blue'</span>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Lambda'</span>)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Log-Likelihood'</span>)</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Poisson Log-Likelihood Across Lambda Values'</span>)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/tmp/ipykernel_55469/1672375046.py:6: DeprecationWarning:
-
-`np.math` is a deprecated alias for the standard library `math` module (Deprecated Numpy 1.25). Replace usages of `np.math` with `math`
-</code></pre>
-</div>
+<p><em>Plot of lambda on the horizontal axis and the likelihood (or log-likelihood) on the vertical axis for a range of lambdas (use the observed number of patents as the input for Y).</em></p>
+<div id="06ffe754" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="hw2_questions_files/figure-html/cell-11-output-2.png" width="845" height="523" class="figure-img"></p>
+<p><img src="hw2_questions_files/figure-html/cell-11-output-1.png" width="845" height="523" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -436,44 +404,98 @@ L(\lambda \mid \mathbf{Y}) = e^{-n\lambda} \lambda^{\sum_{i=1}^n Y_i} \prod_{i=1
 <p><span class="math display">\[
 \lambda_{\text{MLE}} = \bar{Y}
 \]</span></p>
-<p><em>todo: Find the MLE by optimizing your likelihood function with optim() in R or sp.optimize() in Python.</em></p>
-<div id="5215f833" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize_scalar</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the negative log-likelihood function</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> neg_poisson_log_likelihood(lam):</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> lam <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.inf</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    log_fact_y <span class="op">=</span> np.array([np.log(np.math.factorial(yi)) <span class="cf">for</span> yi <span class="kw">in</span> y_obs])</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>np.<span class="bu">sum</span>(y_obs <span class="op">*</span> np.log(lam) <span class="op">-</span> lam <span class="op">-</span> log_fact_y)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Use scipy.optimize to find the lambda that minimizes the negative log-likelihood</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> minimize_scalar(neg_poisson_log_likelihood, bounds<span class="op">=</span>(<span class="fl">0.1</span>, <span class="dv">10</span>), method<span class="op">=</span><span class="st">'bounded'</span>)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the MLE for lambda</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>lambda_mle_optim <span class="op">=</span> result.x</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Lambda MLE from optimization: </span><span class="sc">{</span>lambda_mle_optim<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Lambda MLE from optimization: 3.6847</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/tmp/ipykernel_55469/2498469528.py:7: DeprecationWarning:
-
-`np.math` is a deprecated alias for the standard library `math` module (Deprecated Numpy 1.25). Replace usages of `np.math` with `math`
-</code></pre>
-</div>
-</div>
+<p><strong>Lamda MLE from optimization: 3.6847</strong></p>
 <section id="estimation-of-poisson-regression-model" class="level3">
 <h3 class="anchored" data-anchor-id="estimation-of-poisson-regression-model">Estimation of Poisson Regression Model</h3>
 <p>Next, we extend our simple Poisson model to a Poisson Regression Model such that <span class="math inline">\(Y_i = \text{Poisson}(\lambda_i)\)</span> where <span class="math inline">\(\lambda_i = \exp(X_i'\beta)\)</span>. The interpretation is that the success rate of patent awards is not constant across all firms (<span class="math inline">\(\lambda\)</span>) but rather is a function of firm characteristics <span class="math inline">\(X_i\)</span>. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.</p>
-<p><em>todo: Update your likelihood or log-likelihood function with an additional argument to take in a covariate matrix X. Also change the parameter of the model from lambda to the beta vector. In this model, lambda must be a positive number, so we choose the inverse link function g_inv() to be exp() so that</em> <span class="math inline">\(\lambda_i = e^{X_i'\beta}\)</span>. <em>For example:</em></p>
-<pre><code>poisson_regression_likelihood &lt;- function(beta, Y, X){
-   ...
-}</code></pre>
-<p><em>todo: Use your function along with R’s optim() or Python’s sp.optimize() to find the MLE vector and the Hessian of the Poisson model with covariates. Specifically, the first column of X should be all 1’s to enable a constant term in the model, and the subsequent columns should be age, age squared, binary variables for all but one of the regions, and the binary customer variable. Use the Hessian to find standard errors of the beta parameter estimates and present a table of coefficients and standard errors.</em></p>
-<p><em>todo: Check your results using R’s glm() function or Python sm.GLM() function.</em></p>
-<p><em>todo: Interpret the results.</em></p>
-<p><em>todo: What do you conclude about the effect of Blueprinty’s software on patent success? Because the beta coefficients are not directly interpretable, it may help to create two fake datasets: X_0 and X_1 where X_0 is the X data but with iscustomer=0 for every observation and X_1 is the X data but with iscustomer=1 for every observation. Then, use X_0 and your fitted model to get the vector of predicted number of patents (y_pred_0) for every firm in the dataset, and use X_1 to get Y_pred_1 for every firm. Then subtract y_pred_1 minus y_pred_0 and take the average of that vector of differences.</em></p>
+<p><em>Below is an <strong>updated likelihood or log-likelihood function</strong> with an additional argument to take in a covariate matrix X. Also the parameter of the model has changed from lambda to the beta vector. In this model, lambda must be a positive number, so we choose the inverse link function g_inv() to be exp() so that</em> <span class="math inline">\(\lambda_i = e^{X_i'\beta}\)</span>.</p>
+<div id="2dd4974b" class="cell" data-execution_count="13">
+<div class="cell-output cell-output-stdout">
+<pre><code>             Coefficient  Std. Error
+Intercept         1.3447      0.0208
+Age (std)        -0.0577      0.0188
+Age^2 (std)      -0.1558      0.0168
+Northeast         0.0292      0.0226
+Northwest        -0.0176      0.0330
+South             0.0566      0.0286
+Southwest         0.0506      0.0355
+Customer          0.2076      0.0370</code></pre>
+</div>
+</div>
+<p><em>Checked results using Python sm.GLM() function.</em></p>
+<div id="7870581e" class="cell" data-execution_count="14">
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:                patents   No. Observations:                 1500
+Model:                            GLM   Df Residuals:                     1492
+Model Family:                 Poisson   Df Model:                            7
+Link Function:                    Log   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:                -3258.1
+Date:                Sat, 10 May 2025   Deviance:                       2143.3
+Time:                        15:01:32   Pearson chi2:                 2.07e+03
+No. Iterations:                     5   Pseudo R-squ. (CS):             0.1360
+Covariance Type:            nonrobust                                         
+===============================================================================
+                  coef    std err          z      P&gt;|z|      [0.025      0.975]
+-------------------------------------------------------------------------------
+const           1.3447      0.038     35.059      0.000       1.270       1.420
+age_std        -0.0577      0.015     -3.843      0.000      -0.087      -0.028
+age_squared    -0.1558      0.014    -11.513      0.000      -0.182      -0.129
+Northeast       0.0292      0.044      0.669      0.504      -0.056       0.115
+Northwest      -0.0176      0.054     -0.327      0.744      -0.123       0.088
+South           0.0566      0.053      1.074      0.283      -0.047       0.160
+Southwest       0.0506      0.047      1.072      0.284      -0.042       0.143
+iscustomer      0.2076      0.031      6.719      0.000       0.147       0.268
+===============================================================================</code></pre>
+</div>
+</div>
+<section id="results" class="level4">
+<h4 class="anchored" data-anchor-id="results">Results</h4>
+<p><em>Each coefficient represents the log-change in the expected count per unit change in that variable.</em></p>
+<p><strong>🔹 Intercept = 1.3447</strong> → When all variables are 0 (e.g., average age, non-customer, reference region), expected log-patents ≈ 1.34 → patents ≈ exp(1.3447) ≈ 3.84</p>
+<p><strong>🔹 Customer = 0.2076</strong> → Being a customer is associated with a +0.2076 increase in log-patents → That’s about 23% more patents</p>
+<p><strong>🔹 Age (std) = -0.0577, Age² (std) = -0.1558</strong> → Slight negative linear and stronger negative quadratic effect of age → Implies patents peak at middle age and drop off for older firms</p>
+<p><strong>🔹 Regions: all relatively small effects; not statistically strong without p-values, but hint at mild differences</strong></p>
+<p><em>So what is the conslusion of the effect of Blueprinty’s software on patent success?</em></p>
+<ul>
+<li>Created two fake datasets: X_0 and X_1 where X_0 is the X data but with iscustomer=0 for every observation and X_1 is the X data but with iscustomer=1 for every observation. Then, used X_0 and your fitted model to get the vector of predicted number of patents (y_pred_0) for every firm in the dataset, and use X_1 to get Y_pred_1 for every firm. Then subtracted y_pred_1 minus y_pred_0 and take the average of that vector of differences.</li>
+</ul>
+<div id="c31fea6d" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the fitted GLM model (assuming you've already run the sm.GLM Poisson model above)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Model: poisson_results</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Design matrix: X_df</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create X_0 and X_1</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>X_0 <span class="op">=</span> X_df.copy()</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>X_0[<span class="st">'iscustomer'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>X_1 <span class="op">=</span> X_df.copy()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>X_1[<span class="st">'iscustomer'</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict patent counts under both scenarios</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>y_pred_0 <span class="op">=</span> poisson_results.predict(X_0)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>y_pred_1 <span class="op">=</span> poisson_results.predict(X_1)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the average treatment effect</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>delta <span class="op">=</span> y_pred_1 <span class="op">-</span> y_pred_0</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>average_effect <span class="op">=</span> np.mean(delta)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Estimated average increase in patents per firm due to Blueprinty's software: </span><span class="sc">{</span>average_effect<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Estimated average increase in patents per firm due to Blueprinty's software: 0.7928</code></pre>
+</div>
+</div>
+<div id="429ed72a" class="cell" data-execution_count="16">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw2_questions_files/figure-html/cell-17-output-1.png" width="661" height="468" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 <section id="airbnb-case-study" class="level2">
@@ -509,9 +531,140 @@ Variable Definitions
 </div>
 </div>
 </div>
-<p><em>todo: Assume the number of reviews is a good proxy for the number of bookings. Perform some exploratory data analysis to get a feel for the data, handle or drop observations with missing values on relevant variables, build one or more models (e.g., a poisson regression model for the number of bookings as proxied by the number of reviews), and interpret model coefficients to describe variation in the number of reviews as a function of the variables provided.</em></p>
+</section>
+<section id="poisson-regression-model-number-of-bookings-by-reviews" class="level3">
+<h3 class="anchored" data-anchor-id="poisson-regression-model-number-of-bookings-by-reviews">Poisson Regression Model: Number of Bookings by Reviews</h3>
+<div id="e002f59d" class="cell" data-execution_count="17">
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Generalized Linear Model Regression Results                  
+==============================================================================
+Dep. Variable:      number_of_reviews   No. Observations:                30160
+Model:                            GLM   Df Residuals:                    30149
+Model Family:                 Poisson   Df Model:                           10
+Link Function:                    Log   Scale:                          1.0000
+Method:                          IRLS   Log-Likelihood:            -5.2418e+05
+Date:                Sat, 10 May 2025   Deviance:                   9.2689e+05
+Time:                        15:01:32   Pearson chi2:                 1.37e+06
+No. Iterations:                    10   Pseudo R-squ. (CS):             0.6840
+Covariance Type:            nonrobust                                         
+=============================================================================================
+                                coef    std err          z      P&gt;|z|      [0.025      0.975]
+---------------------------------------------------------------------------------------------
+const                         3.4980      0.016    217.396      0.000       3.467       3.530
+days                       5.072e-05   3.91e-07    129.755      0.000       5e-05    5.15e-05
+bathrooms                    -0.1177      0.004    -31.394      0.000      -0.125      -0.110
+bedrooms                      0.0741      0.002     37.197      0.000       0.070       0.078
+price                     -1.791e-05   8.33e-06     -2.151      0.031   -3.42e-05   -1.59e-06
+review_scores_cleanliness     0.1131      0.001     75.611      0.000       0.110       0.116
+review_scores_location       -0.0769      0.002    -47.796      0.000      -0.080      -0.074
+review_scores_value          -0.0911      0.002    -50.490      0.000      -0.095      -0.088
+room_type_Private room       -0.0105      0.003     -3.847      0.000      -0.016      -0.005
+room_type_Shared room        -0.2463      0.009    -28.578      0.000      -0.263      -0.229
+instant_bookable_t            0.3459      0.003    119.666      0.000       0.340       0.352
+=============================================================================================</code></pre>
+</div>
+</div>
+<section id="interpretation-of-poisson-regression-coefficients" class="level4">
+<h4 class="anchored" data-anchor-id="interpretation-of-poisson-regression-coefficients">Interpretation of Poisson Regression Coefficients</h4>
+<p>In a Poisson regression with a log-link, coefficients represent log-changes in expected number of reviews.<br>
+To interpret them as <strong>percent changes</strong>, we use the formula:</p>
+<p><span class="math display">\[
+\text{Percent Change} = \left( \exp(\beta) - 1 \right) \times 100
+\]</span></p>
+<hr>
+<section id="effect-of-listing-features-on-number-of-reviews" class="level5">
+<h5 class="anchored" data-anchor-id="effect-of-listing-features-on-number-of-reviews">📊 Effect of Listing Features on Number of Reviews</h5>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 18%">
+<col style="width: 33%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th style="text-align: right;">Coefficient (β)</th>
+<th style="text-align: right;">% Change in Expected Reviews</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>instant_bookable_t</code></td>
+<td style="text-align: right;">0.346</td>
+<td style="text-align: right;"><strong>+41%</strong></td>
+<td>Instantly bookable listings get ~41% more reviews</td>
+</tr>
+<tr class="even">
+<td><code>room_type_Private room</code></td>
+<td style="text-align: right;">-0.011</td>
+<td style="text-align: right;"><strong>-1%</strong></td>
+<td>Slightly fewer reviews vs.&nbsp;entire home</td>
+</tr>
+<tr class="odd">
+<td><code>room_type_Shared room</code></td>
+<td style="text-align: right;">-0.246</td>
+<td style="text-align: right;"><strong>-22%</strong></td>
+<td>Shared rooms get ~22% fewer reviews</td>
+</tr>
+<tr class="even">
+<td><code>bedrooms</code></td>
+<td style="text-align: right;">0.074</td>
+<td style="text-align: right;"><strong>+7.7%</strong></td>
+<td>Each additional bedroom → ~8% more reviews</td>
+</tr>
+<tr class="odd">
+<td><code>bathrooms</code></td>
+<td style="text-align: right;">-0.118</td>
+<td style="text-align: right;"><strong>-11%</strong></td>
+<td>Each additional bathroom → ~11% fewer reviews</td>
+</tr>
+<tr class="even">
+<td><code>price</code></td>
+<td style="text-align: right;">-0.000018</td>
+<td style="text-align: right;">~0%</td>
+<td>Slightly fewer reviews for higher prices</td>
+</tr>
+<tr class="odd">
+<td><code>review_scores_cleanliness</code></td>
+<td style="text-align: right;">0.113</td>
+<td style="text-align: right;"><strong>+12%</strong></td>
+<td>Higher cleanliness = more reviews</td>
+</tr>
+<tr class="even">
+<td><code>review_scores_location</code></td>
+<td style="text-align: right;">-0.077</td>
+<td style="text-align: right;"><strong>-7.4%</strong></td>
+<td>Surprisingly, higher location scores → fewer reviews</td>
+</tr>
+<tr class="odd">
+<td><code>review_scores_value</code></td>
+<td style="text-align: right;">-0.091</td>
+<td style="text-align: right;"><strong>-8.7%</strong></td>
+<td>Higher value score = fewer reviews</td>
+</tr>
+<tr class="even">
+<td><code>days</code></td>
+<td style="text-align: right;">0.0000507</td>
+<td style="text-align: right;">~+0.005% per day</td>
+<td>Older listings have more reviews</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="summary" class="level4">
+<h4 class="anchored" data-anchor-id="summary">🧠 Summary</h4>
+<ul>
+<li>The <strong>largest positive effects</strong> come from <code>instant_bookable</code>, <code>cleanliness</code>, and <code>bedrooms</code>.</li>
+<li><strong>Shared rooms underperform</strong> significantly compared to entire homes.</li>
+<li><strong>Review score for value and location</strong> surprisingly have small <strong>negative</strong> effects, possibly due to multicollinearity or confounding with price.</li>
+</ul>
 
 
+</section>
 </section>
 </section>
 
