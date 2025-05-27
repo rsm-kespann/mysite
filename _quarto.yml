@@ -15,7 +15,7 @@ website:
           - text: Homework 1
             href: projects/hw1/hw1_questions.qmd
           - text: Homework 2
-            href: projects/hw2/index.qmd
+            href: projects/hw2/hw2_questions.qmd
       - text: Publications
         href: publications.qmd
 
