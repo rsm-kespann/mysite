@@ -257,7 +257,7 @@ Note
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="c71a04f9" class="cell" data-execution_count="1">
+<div id="eb8ce322" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
@@ -389,7 +389,7 @@ Note
 <h2 class="anchored" data-anchor-id="preparing-the-data-for-estimation">3. Preparing the Data for Estimation</h2>
 <p>The “hard part” of the MNL likelihood function is organizing the data, as we need to keep track of 3 dimensions (consumer <span class="math inline">\(i\)</span>, covariate <span class="math inline">\(k\)</span>, and product <span class="math inline">\(j\)</span>) instead of the typical 2 dimensions for cross-sectional regression models (consumer <span class="math inline">\(i\)</span> and covariate <span class="math inline">\(k\)</span>). The fact that each task for each respondent has the same number of alternatives (3) helps. In addition, we need to convert the categorical variables for brand and ads into binary variables.</p>
 <p><em>todo: reshape and prep the data</em></p>
-<div id="f5497626" class="cell" data-execution_count="3">
+<div id="daf3235f" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
@@ -468,7 +468,7 @@ Note
 <section id="estimation-via-maximum-likelihood" class="level2">
 <h2 class="anchored" data-anchor-id="estimation-via-maximum-likelihood">4. Estimation via Maximum Likelihood</h2>
 <p>We estimate a Multinomial Logit (MNL) model using maximum likelihood. Each consumer’s utility for a streaming option is modeled as a function of brand, ad presence, and price. The model is estimated using the BFGS algorithm, and standard errors are derived from the inverse Hessian.</p>
-<div id="3ced8698" class="cell" data-execution_count="4">
+<div id="905ff198" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
@@ -535,7 +535,7 @@ Note
 <h2 class="anchored" data-anchor-id="estimation-via-bayesian-methods">5. Estimation via Bayesian Methods</h2>
 <p>In this section, we estimate the MNL model using a Bayesian approach via Metropolis-Hastings MCMC. Unlike MLE, which gives point estimates, Bayesian methods provide full posterior distributions, allowing us to visualize uncertainty and incorporate prior beliefs.</p>
 <p>We simulate 11,000 draws using normal priors and an independent Gaussian proposal distribution, retaining the final 10,000 samples for analysis. This lets us explore the likely values of each parameter and compare them to our MLE results.</p>
-<div id="16323612" class="cell" data-execution_count="7">
+<div id="04277a70" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -544,7 +544,7 @@ Note
 </div>
 </div>
 </div>
-<div id="679c8cdb" class="cell" data-execution_count="8">
+<div id="d6af7eb1" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 

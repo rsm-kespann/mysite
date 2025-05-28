@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Kennedy Spann">
-<meta name="dcterms.date" content="2025-05-27">
+<meta name="dcterms.date" content="2025-05-28">
 
 <title>Poisson Regression Examples – Kennedy Spann</title>
 <style>
@@ -174,6 +174,10 @@ window.Quarto = {
     <a class="dropdown-item" href="../../projects/hw2/hw2_questions.html">
  <span class="dropdown-text">Homework 2</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../projects/hw3/hw3_questions.html">
+ <span class="dropdown-text">Homework 3</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -236,7 +240,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 27, 2025</p>
+      <p class="date">May 28, 2025</p>
     </div>
   </div>
   
@@ -258,7 +262,7 @@ window.Quarto = {
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <p><em>Number of Patents by Customer Status</em></p>
-<div id="6854f9d8" class="cell" data-execution_count="2">
+<div id="a8ccf57f" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -269,7 +273,7 @@ window.Quarto = {
 </div>
 <p>Blueprinty customers are not selected at random. It may be important to account for systematic differences in the age and regional location of customers vs non-customers.</p>
 <p><em>Compare regions and ages by customer status</em></p>
-<div id="a00f8637" class="cell" data-execution_count="3">
+<div id="0b2334ea" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-stdout">
 <pre><code>region      Midwest  Northeast  Northwest  South  Southwest
 iscustomer                                                 
@@ -277,7 +281,7 @@ iscustomer
 1                37        328         29     35         52</code></pre>
 </div>
 </div>
-<div id="efabf2d5" class="cell" data-execution_count="4">
+<div id="894311cd" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-stdout">
 <pre><code>             count       mean       std   min   25%   50%    75%   max
 iscustomer                                                            
@@ -285,15 +289,15 @@ iscustomer
 1            481.0  26.900208  7.814678  10.0  20.5  26.5  32.50  49.0</code></pre>
 </div>
 </div>
-<div id="339a0a56" class="cell" data-execution_count="6">
+<div id="90d87afa" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stderr">
-<pre><code>/tmp/ipykernel_42446/2292223956.py:7: FutureWarning:
+<pre><code>/tmp/ipykernel_94876/2292223956.py:7: FutureWarning:
 
 The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
 </code></pre>
 </div>
 </div>
-<div id="a941383e" class="cell" data-execution_count="7">
+<div id="925d1382" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -303,7 +307,7 @@ The default of observed=False is deprecated and will be changed to True in a fut
 </div>
 </div>
 <p>From this histogram we can see higher level of customers in the Northeast region, age seems to be fairly constant between regions, and to confirm these inital assumptions a logistic regression was run:</p>
-<div id="8fbfadca" class="cell" data-execution_count="8">
+<div id="e626fc61" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyrsm <span class="im">as</span> rsm</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Run logistic regression</span></span>
@@ -375,7 +379,7 @@ L(\lambda \mid \mathbf{Y}) = e^{-n\lambda} \lambda^{\sum_{i=1}^n Y_i} \prod_{i=1
 \log L(\lambda \mid \mathbf{Y}) = -n\lambda + \left( \sum_{i=1}^n Y_i \right) \log \lambda - \sum_{i=1}^n \log(Y_i!)
 \]</span></p>
 <p><em>Plot of lambda on the horizontal axis and the likelihood (or log-likelihood) on the vertical axis for a range of lambdas (use the observed number of patents as the input for Y).</em></p>
-<div id="4f7a7863" class="cell" data-execution_count="10">
+<div id="2c150cd5" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -409,7 +413,7 @@ L(\lambda \mid \mathbf{Y}) = e^{-n\lambda} \lambda^{\sum_{i=1}^n Y_i} \prod_{i=1
 <h3 class="anchored" data-anchor-id="estimation-of-poisson-regression-model">Estimation of Poisson Regression Model</h3>
 <p>Next, we extend our simple Poisson model to a Poisson Regression Model such that <span class="math inline">\(Y_i = \text{Poisson}(\lambda_i)\)</span> where <span class="math inline">\(\lambda_i = \exp(X_i'\beta)\)</span>. The interpretation is that the success rate of patent awards is not constant across all firms (<span class="math inline">\(\lambda\)</span>) but rather is a function of firm characteristics <span class="math inline">\(X_i\)</span>. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.</p>
 <p><em>Below is an <strong>updated likelihood or log-likelihood function</strong> with an additional argument to take in a covariate matrix X. Also the parameter of the model has changed from lambda to the beta vector. In this model, lambda must be a positive number, so we choose the inverse link function g_inv() to be exp() so that</em> <span class="math inline">\(\lambda_i = e^{X_i'\beta}\)</span>.</p>
-<div id="f7637b13" class="cell" data-execution_count="13">
+<div id="57c62a14" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-stdout">
 <pre><code>             Coefficient  Std. Error
 Intercept         1.3447      0.0208
@@ -423,7 +427,7 @@ Customer          0.2076      0.0370</code></pre>
 </div>
 </div>
 <p><em>Checked results using Python sm.GLM() function.</em></p>
-<div id="b5118e2e" class="cell" data-execution_count="14">
+<div id="041294b5" class="cell" data-execution_count="14">
 <div class="cell-output cell-output-stdout">
 <pre><code>                 Generalized Linear Model Regression Results                  
 ==============================================================================
@@ -432,8 +436,8 @@ Model:                            GLM   Df Residuals:                     1492
 Model Family:                 Poisson   Df Model:                            7
 Link Function:                    Log   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -3258.1
-Date:                Tue, 27 May 2025   Deviance:                       2143.3
-Time:                        16:45:29   Pearson chi2:                 2.07e+03
+Date:                Wed, 28 May 2025   Deviance:                       2143.3
+Time:                        14:38:09   Pearson chi2:                 2.07e+03
 No. Iterations:                     5   Pseudo R-squ. (CS):             0.1360
 Covariance Type:            nonrobust                                         
 ===============================================================================
@@ -461,7 +465,7 @@ iscustomer      0.2076      0.031      6.719      0.000       0.147       0.268
 <ul>
 <li>Created two fake datasets: X_0 and X_1 where X_0 is the X data but with iscustomer=0 for every observation and X_1 is the X data but with iscustomer=1 for every observation. Then, used X_0 and your fitted model to get the vector of predicted number of patents (y_pred_0) for every firm in the dataset, and use X_1 to get Y_pred_1 for every firm. Then subtracted y_pred_1 minus y_pred_0 and take the average of that vector of differences.</li>
 </ul>
-<div id="34ffd3f9" class="cell" data-execution_count="15">
+<div id="ec58f6a7" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the fitted GLM model (assuming you've already run the sm.GLM Poisson model above)</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Model: poisson_results</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Design matrix: X_df</span></span>
@@ -486,7 +490,7 @@ iscustomer      0.2076      0.031      6.719      0.000       0.147       0.268
 <pre><code>Estimated average increase in patents per firm due to Blueprinty's software: 0.7928</code></pre>
 </div>
 </div>
-<div id="fb6620a1" class="cell" data-execution_count="16">
+<div id="1d85939c" class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -534,7 +538,7 @@ Variable Definitions
 </section>
 <section id="poisson-regression-model-number-of-bookings-by-reviews" class="level3">
 <h3 class="anchored" data-anchor-id="poisson-regression-model-number-of-bookings-by-reviews">Poisson Regression Model: Number of Bookings by Reviews</h3>
-<div id="928242d0" class="cell" data-execution_count="17">
+<div id="39e2d8f5" class="cell" data-execution_count="17">
 <div class="cell-output cell-output-stdout">
 <pre><code>                 Generalized Linear Model Regression Results                  
 ==============================================================================
@@ -543,8 +547,8 @@ Model:                            GLM   Df Residuals:                    30149
 Model Family:                 Poisson   Df Model:                           10
 Link Function:                    Log   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:            -5.2418e+05
-Date:                Tue, 27 May 2025   Deviance:                   9.2689e+05
-Time:                        16:45:29   Pearson chi2:                 1.37e+06
+Date:                Wed, 28 May 2025   Deviance:                   9.2689e+05
+Time:                        14:38:09   Pearson chi2:                 1.37e+06
 No. Iterations:                    10   Pseudo R-squ. (CS):             0.6840
 Covariance Type:            nonrobust                                         
 =============================================================================================
