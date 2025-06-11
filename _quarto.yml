@@ -18,6 +18,8 @@ website:
             href: projects/hw2/hw2_questions.qmd
           - text: Homework 3
             href: projects/hw3/hw3_questions.qmd
+          - text: Homework 4
+            href: projects/hw4/hw4_updated.qmd
       - text: Publications
         href: publications.qmd
 
