@@ -148,6 +148,10 @@ window.Quarto = {
     <a class="dropdown-item" href="../../projects/hw3/hw3_questions.html">
  <span class="dropdown-text">Homework 3</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../projects/hw4/hw4_updated.html">
+ <span class="dropdown-text">Homework 4</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -258,7 +262,7 @@ Note
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div id="7009e3ce" class="cell" data-execution_count="1">
+<div id="ed96323b" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
@@ -389,7 +393,7 @@ Note
 <section id="preparing-the-data-for-estimation" class="level2">
 <h2 class="anchored" data-anchor-id="preparing-the-data-for-estimation">3. Preparing the Data for Estimation</h2>
 <p>The “hard part” of the MNL likelihood function is organizing the data, as we need to keep track of 3 dimensions (consumer <span class="math inline">\(i\)</span>, covariate <span class="math inline">\(k\)</span>, and product <span class="math inline">\(j\)</span>) instead of the typical 2 dimensions for cross-sectional regression models (consumer <span class="math inline">\(i\)</span> and covariate <span class="math inline">\(k\)</span>). The fact that each task for each respondent has the same number of alternatives (3) helps. In addition, we need to convert the categorical variables for brand and ads into binary variables.</p>
-<div id="2ee81946" class="cell" data-execution_count="3">
+<div id="ff521d2d" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
@@ -468,7 +472,7 @@ Note
 <section id="estimation-via-maximum-likelihood" class="level2">
 <h2 class="anchored" data-anchor-id="estimation-via-maximum-likelihood">4. Estimation via Maximum Likelihood</h2>
 <p>We estimate a Multinomial Logit (MNL) model using maximum likelihood. Each consumer’s utility for a streaming option is modeled as a function of brand, ad presence, and price. The model is estimated using the BFGS algorithm, and standard errors are derived from the inverse Hessian.</p>
-<div id="a5c2c099" class="cell" data-execution_count="4">
+<div id="89f2bd9e" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
@@ -535,7 +539,7 @@ Note
 <h2 class="anchored" data-anchor-id="estimation-via-bayesian-methods">5. Estimation via Bayesian Methods</h2>
 <p>In this section, we estimate the MNL model using a Bayesian approach via Metropolis-Hastings MCMC. Unlike MLE, which gives point estimates, Bayesian methods provide full posterior distributions, allowing us to visualize uncertainty and incorporate prior beliefs.</p>
 <p>We simulate 11,000 draws using normal priors and an independent Gaussian proposal distribution, retaining the final 10,000 samples for analysis. This lets us explore the likely values of each parameter and compare them to our MLE results.</p>
-<div id="44fe1778" class="cell" data-execution_count="7">
+<div id="cfb11731" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -544,7 +548,7 @@ Note
 </div>
 </div>
 </div>
-<div id="e80ddd0c" class="cell" data-execution_count="8">
+<div id="7f4704d9" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 

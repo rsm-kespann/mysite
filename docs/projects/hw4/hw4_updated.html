@@ -193,7 +193,7 @@ ul.task-list li input[type="checkbox"] {
 <li>The goal is to watch how the cluster centers (called “centroids”) move around as the algorithm figures out where the natural groups in the data are.</li>
 <li>We use penguin measurements (bill length and flipper length) to test the algorithm and see how well it groups similar penguins together.</li>
 </ul>
-<div id="3bdb4ae4" class="cell" data-execution_count="3">
+<div id="757a1dd1" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -244,7 +244,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
-<div id="c6cfb606" class="cell" data-execution_count="4">
+<div id="e2a69a89" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -253,7 +253,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
-<div id="5b0c4ef2" class="cell" data-execution_count="5">
+<div id="1d0a362f" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-stdout">
 <pre><code>Custom Centroids:
  [[ 47.58671875 216.9609375 ]
@@ -284,7 +284,7 @@ Scikit-Learn Centroids:
 <h3 class="anchored" data-anchor-id="choosing-the-right-number-of-clusters-k">Choosing the Right Number of Clusters (K)</h3>
 <p>To find the best number of clusters, we calculate: - <strong>Within-Cluster Sum of Squares (WCSS)</strong>: Lower is better, but it always decreases as K increases. - <strong>Silhouette Score</strong>: Higher is better; it balances compactness and separation.</p>
 <p>We try K values from 2 to 7 and compare the results.</p>
-<div id="8b78ed40" class="cell" data-execution_count="6">
+<div id="514c88c4" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -316,7 +316,7 @@ Scikit-Learn Centroids:
 </section>
 <section id="visualizing-the-synthetic-data-and-decision-boundary" class="level4">
 <h4 class="anchored" data-anchor-id="visualizing-the-synthetic-data-and-decision-boundary">Visualizing the Synthetic Data and Decision Boundary</h4>
-<div id="5985d4e6" class="cell" data-execution_count="8">
+<div id="4876eb73" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -335,7 +335,7 @@ Scikit-Learn Centroids:
 <ul>
 <li>We now create a second dataset using the same logic but a different random seed, so we can test how well the trained KNN model performs on new, unseen data.</li>
 </ul>
-<div id="356734be" class="cell" data-execution_count="10">
+<div id="7a9277c7" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -354,13 +354,13 @@ Scikit-Learn Centroids:
 <ul>
 <li>We wrote our own version of KNN and compared it with scikit-learn’s to make sure our implementation works correctly — both give similar results on the test data.</li>
 </ul>
-<div id="bc056dfb" class="cell" data-execution_count="13">
+<div id="0360bbdf" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-stdout">
 <pre><code>Custom KNN Accuracy: 0.92
 Scikit-Learn KNN Accuracy: 0.92</code></pre>
 </div>
 </div>
-<div id="86f34d59" class="cell" data-execution_count="14">
+<div id="244bc2b5" class="cell" data-execution_count="14">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -376,7 +376,7 @@ Scikit-Learn KNN Accuracy: 0.92</code></pre>
 <section id="testing-accuracy-at-different-values-of-k" class="level4">
 <h4 class="anchored" data-anchor-id="testing-accuracy-at-different-values-of-k">Testing Accuracy at Different Values of K</h4>
 <p>-Below we have run the function for k=1,…,k=30, each time noting the percentage of correctly-classified points from the test dataset. - Results are plotted where the horizontal axis is 1-30 and the vertical axis is the percentage of correctly-classified points.</p>
-<div id="a3cd6f02" class="cell" data-execution_count="16">
+<div id="85b08e41" class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
