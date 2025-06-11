@@ -9,7 +9,7 @@
 <meta name="author" content="Kennedy Spann">
 <meta name="dcterms.date" content="2025-06-11">
 
-<title>Multinomial Logit Model – Kennedy Spann</title>
+<title>Machine Learning – Kennedy Spann</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -69,39 +69,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -170,15 +138,12 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#likelihood-for-the-multi-nomial-logit-mnl-model" id="toc-likelihood-for-the-multi-nomial-logit-mnl-model" class="nav-link active" data-scroll-target="#likelihood-for-the-multi-nomial-logit-mnl-model">1. Likelihood for the Multi-nomial Logit (MNL) Model</a></li>
-  <li><a href="#simulate-conjoint-data" id="toc-simulate-conjoint-data" class="nav-link" data-scroll-target="#simulate-conjoint-data">2. Simulate Conjoint Data</a></li>
-  <li><a href="#preparing-the-data-for-estimation" id="toc-preparing-the-data-for-estimation" class="nav-link" data-scroll-target="#preparing-the-data-for-estimation">3. Preparing the Data for Estimation</a></li>
-  <li><a href="#estimation-via-maximum-likelihood" id="toc-estimation-via-maximum-likelihood" class="nav-link" data-scroll-target="#estimation-via-maximum-likelihood">4. Estimation via Maximum Likelihood</a></li>
-  <li><a href="#estimation-via-bayesian-methods" id="toc-estimation-via-bayesian-methods" class="nav-link" data-scroll-target="#estimation-via-bayesian-methods">5. Estimation via Bayesian Methods</a></li>
-  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">6. Discussion</a>
+  <li><a href="#a.-k-means" id="toc-a.-k-means" class="nav-link active" data-scroll-target="#a.-k-means">1a. K-Means</a>
   <ul class="collapse">
-  <li><a href="#multi-level-hierarchical-models" id="toc-multi-level-hierarchical-models" class="nav-link" data-scroll-target="#multi-level-hierarchical-models">Multi-Level / Hierarchical Models</a></li>
+  <li><a href="#interpretation-of-custom-k-means-results" id="toc-interpretation-of-custom-k-means-results" class="nav-link" data-scroll-target="#interpretation-of-custom-k-means-results">Interpretation of Custom K-Means Results</a></li>
+  <li><a href="#choosing-the-right-number-of-clusters-k" id="toc-choosing-the-right-number-of-clusters-k" class="nav-link" data-scroll-target="#choosing-the-right-number-of-clusters-k">Choosing the Right Number of Clusters (K)</a></li>
   </ul></li>
+  <li><a href="#a.-k-nearest-neighbors" id="toc-a.-k-nearest-neighbors" class="nav-link" data-scroll-target="#a.-k-nearest-neighbors">2a. K Nearest Neighbors</a></li>
   </ul>
 </nav>
     </div>
@@ -187,7 +152,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Multinomial Logit Model</h1>
+<h1 class="title">Machine Learning</h1>
 </div>
 
 
@@ -216,410 +181,211 @@ window.Quarto = {
 </header>
 
 
-<p>This assignment expores two methods for estimating the MNL model: (1) via Maximum Likelihood, and (2) via a Bayesian approach using a Metropolis-Hastings MCMC algorithm.</p>
-<section id="likelihood-for-the-multi-nomial-logit-mnl-model" class="level2">
-<h2 class="anchored" data-anchor-id="likelihood-for-the-multi-nomial-logit-mnl-model">1. Likelihood for the Multi-nomial Logit (MNL) Model</h2>
-<p>Suppose we have <span class="math inline">\(i=1,\ldots,n\)</span> consumers who each select exactly one product <span class="math inline">\(j\)</span> from a set of <span class="math inline">\(J\)</span> products. The outcome variable is the identity of the product chosen <span class="math inline">\(y_i \in \{1, \ldots, J\}\)</span> or equivalently a vector of <span class="math inline">\(J-1\)</span> zeros and <span class="math inline">\(1\)</span> one, where the <span class="math inline">\(1\)</span> indicates the selected product. For example, if the third product was chosen out of 3 products, then either <span class="math inline">\(y=3\)</span> or <span class="math inline">\(y=(0,0,1)\)</span> depending on how we want to represent it. Suppose also that we have a vector of data on each product <span class="math inline">\(x_j\)</span> (eg, brand, price, etc.).</p>
-<p>We model the consumer’s decision as the selection of the product that provides the most utility, and we’ll specify the utility function as a linear function of the product characteristics:</p>
-<p><span class="math display">\[ U_{ij} = x_j'\beta + \epsilon_{ij} \]</span></p>
-<p>where <span class="math inline">\(\epsilon_{ij}\)</span> is an i.i.d. extreme value error term.</p>
-<p>The choice of the i.i.d. extreme value error term leads to a closed-form expression for the probability that consumer <span class="math inline">\(i\)</span> chooses product <span class="math inline">\(j\)</span>:</p>
-<p><span class="math display">\[ \mathbb{P}_i(j) = \frac{e^{x_j'\beta}}{\sum_{k=1}^Je^{x_k'\beta}} \]</span></p>
-<p>For example, if there are 3 products, the probability that consumer <span class="math inline">\(i\)</span> chooses product 3 is:</p>
-<p><span class="math display">\[ \mathbb{P}_i(3) = \frac{e^{x_3'\beta}}{e^{x_1'\beta} + e^{x_2'\beta} + e^{x_3'\beta}} \]</span></p>
-<p>A clever way to write the individual likelihood function for consumer <span class="math inline">\(i\)</span> is the product of the <span class="math inline">\(J\)</span> probabilities, each raised to the power of an indicator variable (<span class="math inline">\(\delta_{ij}\)</span>) that indicates the chosen product:</p>
-<p><span class="math display">\[ L_i(\beta) = \prod_{j=1}^J \mathbb{P}_i(j)^{\delta_{ij}} = \mathbb{P}_i(1)^{\delta_{i1}} \times \ldots \times \mathbb{P}_i(J)^{\delta_{iJ}}\]</span></p>
-<p>Notice that if the consumer selected product <span class="math inline">\(j=3\)</span>, then <span class="math inline">\(\delta_{i3}=1\)</span> while <span class="math inline">\(\delta_{i1}=\delta_{i2}=0\)</span> and the likelihood is:</p>
-<p><span class="math display">\[ L_i(\beta) = \mathbb{P}_i(1)^0 \times \mathbb{P}_i(2)^0 \times \mathbb{P}_i(3)^1 = \mathbb{P}_i(3) = \frac{e^{x_3'\beta}}{\sum_{k=1}^3e^{x_k'\beta}} \]</span></p>
-<p>The joint likelihood (across all consumers) is the product of the <span class="math inline">\(n\)</span> individual likelihoods:</p>
-<p><span class="math display">\[ L_n(\beta) = \prod_{i=1}^n L_i(\beta) = \prod_{i=1}^n \prod_{j=1}^J \mathbb{P}_i(j)^{\delta_{ij}} \]</span></p>
-<p>And the joint log-likelihood function is:</p>
-<p><span class="math display">\[ \ell_n(\beta) = \sum_{i=1}^n \sum_{j=1}^J \delta_{ij} \log(\mathbb{P}_i(j)) \]</span></p>
-</section>
-<section id="simulate-conjoint-data" class="level2">
-<h2 class="anchored" data-anchor-id="simulate-conjoint-data">2. Simulate Conjoint Data</h2>
-<p>We will simulate data from a conjoint experiment about video content streaming services. We elect to simulate 100 respondents, each completing 10 choice tasks, where they choose from three alternatives per task. For simplicity, there is not a “no choice” option; each simulated respondent must select one of the 3 alternatives.</p>
-<p>Each alternative is a hypothetical streaming offer consistent of three attributes: (1) brand is either Netflix, Amazon Prime, or Hulu; (2) ads can either be part of the experience, or it can be ad-free, and (3) price per month ranges from $4 to $32 in increments of $4.</p>
-<p>The part-worths (ie, preference weights or beta parameters) for the attribute levels will be 1.0 for Netflix, 0.5 for Amazon Prime (with 0 for Hulu as the reference brand); -0.8 for included adverstisements (0 for ad-free); and -0.1*price so that utility to consumer <span class="math inline">\(i\)</span> for hypothethical streaming service <span class="math inline">\(j\)</span> is</p>
-<p><span class="math display">\[
-u_{ij} = (1 \times Netflix_j) + (0.5 \times Prime_j) + (-0.8*Ads_j) - 0.1\times Price_j + \varepsilon_{ij}
-\]</span></p>
-<p>where the variables are binary indicators and <span class="math inline">\(\varepsilon\)</span> is Type 1 Extreme Value (ie, Gumble) distributed.</p>
-<p>The following code provides the simulation of the conjoint data.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<div id="7009e3ce" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display" data-execution_count="1">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">resp</th>
-<th data-quarto-table-cell-role="th">task</th>
-<th data-quarto-table-cell-role="th">brand</th>
-<th data-quarto-table-cell-role="th">ad</th>
-<th data-quarto-table-cell-role="th">price</th>
-<th data-quarto-table-cell-role="th">choice</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>1</td>
-<td>1</td>
-<td>P</td>
-<td>No</td>
-<td>32</td>
-<td>0</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>1</td>
-<td>1</td>
-<td>N</td>
-<td>No</td>
-<td>28</td>
-<td>0</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>1</td>
-<td>1</td>
-<td>N</td>
-<td>No</td>
-<td>24</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>1</td>
-<td>2</td>
-<td>H</td>
-<td>No</td>
-<td>28</td>
-<td>0</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>1</td>
-<td>2</td>
-<td>H</td>
-<td>No</td>
-<td>8</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2995</td>
-<td>100</td>
-<td>9</td>
-<td>P</td>
-<td>Yes</td>
-<td>12</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">2996</td>
-<td>100</td>
-<td>9</td>
-<td>P</td>
-<td>No</td>
-<td>24</td>
-<td>0</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2997</td>
-<td>100</td>
-<td>10</td>
-<td>H</td>
-<td>No</td>
-<td>20</td>
-<td>0</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">2998</td>
-<td>100</td>
-<td>10</td>
-<td>H</td>
-<td>Yes</td>
-<td>8</td>
-<td>0</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2999</td>
-<td>100</td>
-<td>10</td>
-<td>N</td>
-<td>No</td>
-<td>16</td>
-<td>1</td>
-</tr>
-</tbody>
-</table>
-
-<p>3000 rows × 6 columns</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="preparing-the-data-for-estimation" class="level2">
-<h2 class="anchored" data-anchor-id="preparing-the-data-for-estimation">3. Preparing the Data for Estimation</h2>
-<p>The “hard part” of the MNL likelihood function is organizing the data, as we need to keep track of 3 dimensions (consumer <span class="math inline">\(i\)</span>, covariate <span class="math inline">\(k\)</span>, and product <span class="math inline">\(j\)</span>) instead of the typical 2 dimensions for cross-sectional regression models (consumer <span class="math inline">\(i\)</span> and covariate <span class="math inline">\(k\)</span>). The fact that each task for each respondent has the same number of alternatives (3) helps. In addition, we need to convert the categorical variables for brand and ads into binary variables.</p>
-<div id="2ee81946" class="cell" data-execution_count="3">
-<div class="cell-output cell-output-display" data-execution_count="3">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">resp</th>
-<th data-quarto-table-cell-role="th">task</th>
-<th data-quarto-table-cell-role="th">price</th>
-<th data-quarto-table-cell-role="th">choice</th>
-<th data-quarto-table-cell-role="th">brand_N</th>
-<th data-quarto-table-cell-role="th">brand_P</th>
-<th data-quarto-table-cell-role="th">ad_Yes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>1</td>
-<td>1</td>
-<td>32</td>
-<td>0</td>
-<td>False</td>
-<td>True</td>
-<td>False</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>1</td>
-<td>1</td>
-<td>28</td>
-<td>0</td>
-<td>True</td>
-<td>False</td>
-<td>False</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>1</td>
-<td>1</td>
-<td>24</td>
-<td>1</td>
-<td>True</td>
-<td>False</td>
-<td>False</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>1</td>
-<td>2</td>
-<td>28</td>
-<td>0</td>
-<td>False</td>
-<td>False</td>
-<td>False</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>1</td>
-<td>2</td>
-<td>8</td>
-<td>1</td>
-<td>False</td>
-<td>False</td>
-<td>False</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-</section>
-<section id="estimation-via-maximum-likelihood" class="level2">
-<h2 class="anchored" data-anchor-id="estimation-via-maximum-likelihood">4. Estimation via Maximum Likelihood</h2>
-<p>We estimate a Multinomial Logit (MNL) model using maximum likelihood. Each consumer’s utility for a streaming option is modeled as a function of brand, ad presence, and price. The model is estimated using the BFGS algorithm, and standard errors are derived from the inverse Hessian.</p>
-<div id="a5c2c099" class="cell" data-execution_count="4">
-<div class="cell-output cell-output-display" data-execution_count="4">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">Parameter</th>
-<th data-quarto-table-cell-role="th">Estimate</th>
-<th data-quarto-table-cell-role="th">Std. Error</th>
-<th data-quarto-table-cell-role="th">95% CI Lower</th>
-<th data-quarto-table-cell-role="th">95% CI Upper</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>brand_N</td>
-<td>1.056892</td>
-<td>0.115662</td>
-<td>0.830194</td>
-<td>1.283590</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>brand_P</td>
-<td>0.473296</td>
-<td>0.104841</td>
-<td>0.267808</td>
-<td>0.678784</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>ad_Yes</td>
-<td>-0.772385</td>
-<td>0.088620</td>
-<td>-0.946081</td>
-<td>-0.598689</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>price</td>
-<td>-0.096418</td>
-<td>0.006050</td>
-<td>-0.108277</td>
-<td>-0.084560</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
+<p><em>todo: do two analyses. Do one of either 1a or 1b, AND one of either 2a or 2b.</em></p>
+<section id="a.-k-means" class="level2">
+<h2 class="anchored" data-anchor-id="a.-k-means">1a. K-Means</h2>
 <ul>
-<li><p>The estimated coefficient for <strong>brand_N (Netflix)</strong> is positive, suggesting a slight preference for Netflix over the baseline (Hulu). However, the 95% confidence interval includes zero, so this estimate is not statistically significant.</p></li>
-<li><p>The coefficient for <strong>brand_P (Amazon Prime)</strong> is slightly negative, indicating a potential preference for Hulu over Prime, but again, the confidence interval includes zero, meaning this result is also not statistically significant.</p></li>
-<li><p>The coefficient for <strong>ad_Yes</strong> is slightly positive in this sample, which is unexpected — consumers typically dislike ads. However, the wide confidence interval again suggests this result is not statistically significant and may be due to noise in the data.</p></li>
-<li><p>The coefficient for <strong>price</strong> is near zero, indicating very weak price sensitivity in this dataset. In a well-simulated or real-world dataset, we would typically expect a negative coefficient (i.e., higher price = lower utility).</p></li>
-<li><p>Overall, the wide confidence intervals and lack of statistically significant estimates suggest that this dataset may not reflect strong consumer preferences — possibly due to random or placeholder data.</p></li>
+<li>This section shows how K-Means works by building the algorithm from scratch, step by step.</li>
+<li>The goal is to watch how the cluster centers (called “centroids”) move around as the algorithm figures out where the natural groups in the data are.</li>
+<li>We use penguin measurements (bill length and flipper length) to test the algorithm and see how well it groups similar penguins together.</li>
 </ul>
-</section>
-<section id="estimation-via-bayesian-methods" class="level2">
-<h2 class="anchored" data-anchor-id="estimation-via-bayesian-methods">5. Estimation via Bayesian Methods</h2>
-<p>In this section, we estimate the MNL model using a Bayesian approach via Metropolis-Hastings MCMC. Unlike MLE, which gives point estimates, Bayesian methods provide full posterior distributions, allowing us to visualize uncertainty and incorporate prior beliefs.</p>
-<p>We simulate 11,000 draws using normal priors and an independent Gaussian proposal distribution, retaining the final 10,000 samples for analysis. This lets us explore the likely values of each parameter and compare them to our MLE results.</p>
-<div id="44fe1778" class="cell" data-execution_count="7">
+<div id="3bdb4ae4" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="hw3_questions_files/figure-html/cell-8-output-1.png" width="1333" height="468" class="figure-img"></p>
+<p><img src="hw4_updated_files/figure-html/cell-4-output-1.png" width="519" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-4-output-2.png" width="519" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-4-output-3.png" width="519" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-4-output-4.png" width="519" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-4-output-5.png" width="519" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-4-output-6.png" width="519" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-4-output-7.png" width="519" height="449" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="e80ddd0c" class="cell" data-execution_count="8">
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div id="c6cfb606" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
 <div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">Parameter</th>
-<th data-quarto-table-cell-role="th">Posterior Mean</th>
-<th data-quarto-table-cell-role="th">Posterior Std Dev</th>
-<th data-quarto-table-cell-role="th">2.5% CI</th>
-<th data-quarto-table-cell-role="th">97.5% CI</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>brand_N</td>
-<td>1.043883</td>
-<td>0.104970</td>
-<td>0.839351</td>
-<td>1.262450</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>brand_P</td>
-<td>0.456461</td>
-<td>0.104949</td>
-<td>0.259476</td>
-<td>0.663309</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>ad_Yes</td>
-<td>-0.765408</td>
-<td>0.091037</td>
-<td>-0.940314</td>
-<td>-0.589926</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>price</td>
-<td>-0.096463</td>
-<td>0.006047</td>
-<td>-0.107856</td>
-<td>-0.084433</td>
-</tr>
-</tbody>
-</table>
-
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-5-output-1.png" width="519" height="449" class="figure-img"></p>
+</figure>
 </div>
 </div>
 </div>
-<p>The table above summarizes the posterior distribution of each parameter after running a Metropolis-Hastings sampler with 10,000 retained samples. The posterior means closely align with the MLE point estimates, providing additional support for the stability of our estimates under different inference approaches.</p>
+<div id="5b0c4ef2" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-stdout">
+<pre><code>Custom Centroids:
+ [[ 47.58671875 216.9609375 ]
+ [ 45.94574468 196.84042553]
+ [ 38.4275     186.99166667]]
+
+Scikit-Learn Centroids:
+ [[ 47.56744186 216.88372093]
+ [ 45.95483871 196.7311828 ]
+ [ 38.4275     186.99166667]]</code></pre>
+</div>
+</div>
+<section id="interpretation-of-custom-k-means-results" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-of-custom-k-means-results">Interpretation of Custom K-Means Results</h3>
+<p>The plots above illustrate the iterative process of the custom K-Means clustering algorithm applied to the Palmer Penguins dataset using <strong>bill length</strong> and <strong>flipper length</strong> as features.</p>
+<p>Each graph shows: - The <strong>positions of centroids</strong> at a specific iteration (red X’s) - How the centroids <strong>move and stabilize</strong> over time as the algorithm minimizes within-cluster variation</p>
+<section id="key-observations" class="level4">
+<h4 class="anchored" data-anchor-id="key-observations">Key Observations:</h4>
 <ul>
-<li>For <strong>brand_N</strong> and <strong>brand_P</strong>, the posterior distributions are centered near zero, consistent with the MLE results and suggesting that preferences for Netflix and Prime over Hulu are not statistically distinguishable in this dataset.</li>
-<li>For <strong>ad_Yes</strong>, the posterior mean is also near zero, with a wide credible interval — similar to what we observed under MLE. This may indicate insufficient evidence to claim that ad presence has a meaningful effect on choice in this sample.</li>
-<li>The <strong>price</strong> coefficient remains close to zero in the Bayesian estimation as well, reaffirming that price sensitivity is minimal in this (likely randomly simulated) dataset.</li>
+<li>Centroids initially start at random locations and gradually shift toward the <strong>densest regions</strong> of the data.</li>
+<li>The algorithm converges after a few iterations, indicating that <strong>cluster assignments have stabilized</strong>.</li>
+<li>The spatial separation between the final centroids suggests that the data naturally forms three distinguishable groups based on the selected features.</li>
 </ul>
-<p>Unlike MLE, Bayesian inference provides a full distribution over each parameter, which can be especially valuable in quantifying uncertainty and incorporating prior beliefs. In this case, the similarity in point estimates and intervals across both methods helps validate the findings.</p>
+<p>This behavior aligns with the K-Means objective of finding <strong>compact, well-separated clusters</strong>.</p>
 </section>
-<section id="discussion" class="level2">
-<h2 class="anchored" data-anchor-id="discussion">6. Discussion</h2>
-<p>If we had not simulated the data and were working with real survey responses, we would interpret the parameter estimates as reflecting actual consumer preferences in the sample. For instance, a result where ( <em>{} &gt; </em>{} ) would suggest that, all else equal, consumers prefer Netflix over Prime. This directional preference is encoded in the utility function and affects choice probabilities accordingly.</p>
-<p>It also makes intuitive sense that ( _{} ) is negative — this indicates that higher prices reduce the probability of choosing a product, consistent with economic theory and consumer behavior.</p>
-<hr>
-<section id="multi-level-hierarchical-models" class="level3">
-<h3 class="anchored" data-anchor-id="multi-level-hierarchical-models">Multi-Level / Hierarchical Models</h3>
-<p>To estimate a multi-level (or hierarchical Bayes) model, we would need to allow each respondent to have their own set of part-worths rather than assuming a single, fixed vector of parameters across everyone. That means:</p>
+</section>
+<section id="choosing-the-right-number-of-clusters-k" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-the-right-number-of-clusters-k">Choosing the Right Number of Clusters (K)</h3>
+<p>To find the best number of clusters, we calculate: - <strong>Within-Cluster Sum of Squares (WCSS)</strong>: Lower is better, but it always decreases as K increases. - <strong>Silhouette Score</strong>: Higher is better; it balances compactness and separation.</p>
+<p>We try K values from 2 to 7 and compare the results.</p>
+<div id="8b78ed40" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-7-output-1.png" width="536" height="376" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-7-output-2.png" width="523" height="376" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 <ul>
-<li><strong>Simulation</strong>: We would draw each respondent’s individual-level betas from a population-level distribution (e.g., multivariate normal).</li>
-<li><strong>Estimation</strong>: We would need to jointly estimate both the individual-level parameters and the hyperparameters (e.g., mean and covariance of the population distribution). This usually requires a more advanced Bayesian sampler, like Gibbs sampling or hierarchical MCMC.</li>
+<li>The <strong>elbow plot suggests that 3 clusters</strong> is a good choice, as the reduction in within-cluster variance slows significantly after K = 3.</li>
+<li>The <strong>silhouette score is highest at K = 2</strong>, but <strong>K = 3 still shows a strong score</strong>, indicating a reasonable trade-off between separation and complexity.</li>
 </ul>
-<p>These models better reflect real-world heterogeneity in preferences and are commonly used in industry for conjoint analysis, especially when dealing with large-scale consumer choice data.</p>
+</section>
+</section>
+<section id="a.-k-nearest-neighbors" class="level2">
+<h2 class="anchored" data-anchor-id="a.-k-nearest-neighbors">2a. K Nearest Neighbors</h2>
+<ul>
+<li>We are generating a synthetic dataset where the class label depends on whether a point falls above or below a wiggly curve — this will be used to train our KNN model.</li>
+</ul>
+<section id="step-1-generate-the-synthetic-dataset" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-generate-the-synthetic-dataset">Step 1: Generate the Synthetic Dataset</h4>
+</section>
+<section id="visualizing-the-synthetic-data-and-decision-boundary" class="level4">
+<h4 class="anchored" data-anchor-id="visualizing-the-synthetic-data-and-decision-boundary">Visualizing the Synthetic Data and Decision Boundary</h4>
+<div id="5985d4e6" class="cell" data-execution_count="8">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-9-output-1.png" width="513" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Each dot represents a data point, placed according to its two features: <code>x1</code> (left to right) and <code>x2</code> (bottom to top).</li>
+<li>The dashed line shows the true dividing line: red points are above the line (class 1) and blue points are below it (class 0).</li>
+</ul>
+</section>
+<section id="step-2-generate-a-test-dataset-same-structure-different-seed" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-generate-a-test-dataset-same-structure-different-seed">Step 2: Generate a Test Dataset (Same Structure, Different Seed)</h4>
+<ul>
+<li>We now create a second dataset using the same logic but a different random seed, so we can test how well the trained KNN model performs on new, unseen data.</li>
+</ul>
+<div id="356734be" class="cell" data-execution_count="10">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-11-output-1.png" width="513" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>This graph shows a new batch of randomly generated points — some fall above the dashed line (marked red), and others below it (marked blue), just like before.</li>
+<li>Even though the pattern is different from the first dataset, the <strong>wiggly boundary still separates the two classes well</strong>, showing the underlying rule is consistent.</li>
+</ul>
+</section>
+<section id="step-3-implement-knn-from-scratch" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-implement-knn-from-scratch">Step 3: Implement KNN from Scratch</h4>
+<ul>
+<li>We wrote our own version of KNN and compared it with scikit-learn’s to make sure our implementation works correctly — both give similar results on the test data.</li>
+</ul>
+<div id="bc056dfb" class="cell" data-execution_count="13">
+<div class="cell-output cell-output-stdout">
+<pre><code>Custom KNN Accuracy: 0.92
+Scikit-Learn KNN Accuracy: 0.92</code></pre>
+</div>
+</div>
+<div id="86f34d59" class="cell" data-execution_count="14">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-15-output-1.png" width="592" height="523" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>This graph shows how KNN (with k = 5) splits the feature space into red and blue regions based on the training data — the wavy decision boundary closely follows the true class separation pattern.</li>
+</ul>
+</section>
+<section id="testing-accuracy-at-different-values-of-k" class="level4">
+<h4 class="anchored" data-anchor-id="testing-accuracy-at-different-values-of-k">Testing Accuracy at Different Values of K</h4>
+<p>-Below we have run the function for k=1,…,k=30, each time noting the percentage of correctly-classified points from the test dataset. - Results are plotted where the horizontal axis is 1-30 and the vertical axis is the percentage of correctly-classified points.</p>
+<div id="a3cd6f02" class="cell" data-execution_count="16">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw4_updated_files/figure-html/cell-17-output-1.png" width="585" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>The optimal value of K is <strong>1 or 2</strong>, where the classifier achieved its <strong>highest test accuracy of 94%</strong>. These low values of K allow the model to capture the complex shape of the true boundary with minimal error.</li>
+<li>K = 1: Very flexible, closely fits training data, great if your data is clean and your test points are near known examples.</li>
+<li>K = 5: More conservative, smoother boundary, often more stable across noisy data or real-world settings.</li>
+</ul>
 
 
 </section>

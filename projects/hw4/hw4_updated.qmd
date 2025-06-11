@@ -1,0 +1,395 @@
+---
+title: Machine Learning
+author: Kennedy Spann
+date: today
+
+---
+
+_todo: do two analyses.  Do one of either 1a or 1b, AND one of either 2a or 2b._
+
+
+## 1a. K-Means
+
+- This section shows how K-Means works by building the algorithm from scratch, step by step.
+- The goal is to watch how the cluster centers (called "centroids") move around as the algorithm figures out where the natural groups in the data are.
+- We use penguin measurements (bill length and flipper length) to test the algorithm and see how well it groups similar penguins together.
+
+
+
+```{python}
+#| echo: false
+import seaborn as sns
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load dataset
+penguins = sns.load_dataset("penguins")
+df = penguins[['bill_length_mm', 'flipper_length_mm']].dropna().reset_index(drop=True)
+X = df.values
+```
+
+
+```{python}
+#| echo: false
+def initialize_centroids(X, k, seed=42):
+    np.random.seed(seed)
+    indices = np.random.choice(X.shape[0], k, replace=False)
+    return X[indices]
+
+def assign_clusters(X, centroids):
+    distances = np.sqrt(((X - centroids[:, np.newaxis])**2).sum(axis=2))
+    return np.argmin(distances, axis=0)
+
+def update_centroids(X, labels, k):
+    return np.array([X[labels == i].mean(axis=0) for i in range(k)])
+
+def has_converged(old_centroids, new_centroids, tol=1e-4):
+    return np.all(np.linalg.norm(old_centroids - new_centroids, axis=1) < tol)
+
+def custom_kmeans(X, k=3, max_iters=100):
+    centroids = initialize_centroids(X, k)
+    history = [centroids.copy()]
+    
+    for _ in range(max_iters):
+        labels = assign_clusters(X, centroids)
+        new_centroids = update_centroids(X, labels, k)
+        history.append(new_centroids.copy())
+        
+        if has_converged(centroids, new_centroids):
+            break
+        centroids = new_centroids
+        
+    return labels, centroids, history
+```
+
+```{python}
+#| echo: false
+labels, final_centroids, centroid_history = custom_kmeans(X, k=3)
+
+for i, centroids in enumerate(centroid_history):
+    plt.figure(figsize=(6,5))
+    plt.scatter(X[:, 0], X[:, 1], c='lightgray', s=30, label='Data')
+    plt.scatter(centroids[:, 0], centroids[:, 1], color='red', s=100, marker='X', label='Centroids')
+    plt.title(f'K-Means Iteration {i}')
+    plt.xlabel('Bill Length (mm)')
+    plt.ylabel('Flipper Length (mm)')
+    plt.legend()
+    plt.show()
+```
+
+
+```{python}
+#| echo: false
+from sklearn.cluster import KMeans
+
+kmeans_builtin = KMeans(n_clusters=3, random_state=42).fit(X)
+
+plt.figure(figsize=(6,5))
+plt.scatter(X[:, 0], X[:, 1], c=kmeans_builtin.labels_, cmap='viridis', s=40)
+plt.scatter(kmeans_builtin.cluster_centers_[:, 0], kmeans_builtin.cluster_centers_[:, 1], color='red', s=100, marker='X')
+plt.title('Scikit-Learn KMeans Result')
+plt.xlabel('Bill Length (mm)')
+plt.ylabel('Flipper Length (mm)')
+plt.show()
+```
+
+
+```{python}
+#| echo: false
+# Compare final centroids (custom vs sklearn)
+print("Custom Centroids:\n", final_centroids)
+print("\nScikit-Learn Centroids:\n", kmeans_builtin.cluster_centers_)
+```
+
+### Interpretation of Custom K-Means Results
+
+The plots above illustrate the iterative process of the custom K-Means clustering algorithm applied to the Palmer Penguins dataset using **bill length** and **flipper length** as features. 
+
+Each graph shows:
+- The **positions of centroids** at a specific iteration (red X's)
+- How the centroids **move and stabilize** over time as the algorithm minimizes within-cluster variation
+
+#### Key Observations:
+- Centroids initially start at random locations and gradually shift toward the **densest regions** of the data.
+- The algorithm converges after a few iterations, indicating that **cluster assignments have stabilized**.
+- The spatial separation between the final centroids suggests that the data naturally forms three distinguishable groups based on the selected features.
+
+This behavior aligns with the K-Means objective of finding **compact, well-separated clusters**.
+
+### Choosing the Right Number of Clusters (K)
+
+To find the best number of clusters, we calculate:
+- **Within-Cluster Sum of Squares (WCSS)**: Lower is better, but it always decreases as K increases.
+- **Silhouette Score**: Higher is better; it balances compactness and separation.
+
+We try K values from 2 to 7 and compare the results.
+
+```{python}
+#| echo: false
+from sklearn.metrics import silhouette_score
+from sklearn.cluster import KMeans
+
+wcss = []
+silhouette_scores = []
+K_range = range(2, 8)
+
+for k in K_range:
+    model = KMeans(n_clusters=k, random_state=42).fit(X)
+    wcss.append(model.inertia_)
+    silhouette_scores.append(silhouette_score(X, model.labels_))
+
+# Plot WCSS (Elbow Method)
+plt.figure(figsize=(6,4))
+plt.plot(K_range, wcss, marker='o')
+plt.title('Elbow Plot: Within-Cluster Sum of Squares')
+plt.xlabel('Number of Clusters (K)')
+plt.ylabel('WCSS')
+plt.xticks(K_range)
+plt.grid(True)
+plt.show()
+
+# Plot Silhouette Scores
+plt.figure(figsize=(6,4))
+plt.plot(K_range, silhouette_scores, marker='o', color='green')
+plt.title('Silhouette Scores by Number of Clusters')
+plt.xlabel('Number of Clusters (K)')
+plt.ylabel('Silhouette Score')
+plt.xticks(K_range)
+plt.grid(True)
+plt.show()
+```
+
+- The **elbow plot suggests that 3 clusters** is a good choice, as the reduction in within-cluster variance slows significantly after K = 3.
+- The **silhouette score is highest at K = 2**, but **K = 3 still shows a strong score**, indicating a reasonable trade-off between separation and complexity.
+
+
+
+## 2a. K Nearest Neighbors
+
+- We are generating a synthetic dataset where the class label depends on whether a point falls above or below a wiggly curve — this will be used to train our KNN model.
+
+
+#### Step 1: Generate the Synthetic Dataset
+
+```{python}
+#| echo: false
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Set seed for reproducibility
+np.random.seed(42)
+n = 100
+
+# Generate random x1 and x2 values
+x1 = np.random.uniform(-3, 3, n)
+x2 = np.random.uniform(-3, 3, n)
+
+# Define the wiggly boundary
+boundary = np.sin(4 * x1) + x1
+
+# Create binary labels: y = 1 if above the boundary, else 0
+y = (x2 > boundary).astype(int)
+
+# Combine into a DataFrame
+dat = pd.DataFrame({'x1': x1, 'x2': x2, 'y': y})
+```
+
+#### Visualizing the Synthetic Data and Decision Boundary
+
+```{python}
+#| echo: false
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Plot the data with color by class
+plt.figure(figsize=(6, 5))
+colors = ['blue' if label == 0 else 'red' for label in dat['y']]
+plt.scatter(dat['x1'], dat['x2'], c=colors, edgecolor='k', s=60)
+
+# Optional: add the wiggly decision boundary
+x_vals = np.linspace(-3, 3, 300)
+boundary = np.sin(4 * x_vals) + x_vals
+plt.plot(x_vals, boundary, color='black', linestyle='--', label='Boundary')
+
+# Labels and aesthetics
+plt.title('Synthetic Dataset Colored by Class Label')
+plt.xlabel('x1')
+plt.ylabel('x2')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+- Each dot represents a data point, placed according to its two features: `x1` (left to right) and `x2` (bottom to top).
+- The dashed line shows the true dividing line: red points are above the line (class 1) and blue points are below it (class 0).
+
+#### Step 2: Generate a Test Dataset (Same Structure, Different Seed)
+- We now create a second dataset using the same logic but a different random seed, so we can test how well the trained KNN model performs on new, unseen data.
+
+
+```{python}
+#| echo: false
+# Set a new random seed
+np.random.seed(24)  # Different from seed=42 used before
+n_test = 100
+
+# Generate test data
+x1_test = np.random.uniform(-3, 3, n_test)
+x2_test = np.random.uniform(-3, 3, n_test)
+
+# Compute boundary and class labels
+boundary_test = np.sin(4 * x1_test) + x1_test
+y_test = (x2_test > boundary_test).astype(int)
+
+# Create test dataframe
+test_dat = pd.DataFrame({'x1': x1_test, 'x2': x2_test, 'y': y_test})
+```
+
+```{python}
+#| echo: false
+# Plot the test data with class coloring
+plt.figure(figsize=(6, 5))
+colors_test = ['blue' if label == 0 else 'red' for label in test_dat['y']]
+plt.scatter(test_dat['x1'], test_dat['x2'], c=colors_test, edgecolor='k', s=60)
+
+# Add the decision boundary
+x_vals_test = np.linspace(-3, 3, 300)
+boundary_line = np.sin(4 * x_vals_test) + x_vals_test
+plt.plot(x_vals_test, boundary_line, color='black', linestyle='--', label='Boundary')
+
+# Labels and aesthetics
+plt.title('Test Dataset (New Random Seed)')
+plt.xlabel('x1')
+plt.ylabel('x2')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+- This graph shows a new batch of randomly generated points — some fall above the dashed line (marked red), and others below it (marked blue), just like before.
+- Even though the pattern is different from the first dataset, the **wiggly boundary still separates the two classes well**, showing the underlying rule is consistent.
+
+
+
+#### Step 3: Implement KNN from Scratch
+
+- We wrote our own version of KNN and compared it with scikit-learn’s to make sure our implementation works correctly — both give similar results on the test data.
+
+```{python}
+#|echo: false
+from collections import Counter
+
+# Define custom KNN function
+def knn_predict(X_train, y_train, X_test, k=5):
+    predictions = []
+
+    for test_point in X_test:
+        # Calculate Euclidean distance to all training points
+        distances = np.sqrt(np.sum((X_train - test_point) ** 2, axis=1))
+        # Get indices of k closest points
+        nearest_indices = np.argsort(distances)[:k]
+        # Get labels of nearest neighbors
+        nearest_labels = y_train[nearest_indices]
+        # Predict the most common class
+        most_common = Counter(nearest_labels).most_common(1)[0][0]
+        predictions.append(most_common)
+
+    return np.array(predictions)
+```
+
+```{python}
+#|echo: false
+# Extract feature arrays
+X_train = dat[['x1', 'x2']].values
+y_train = dat['y'].values
+X_test = test_dat[['x1', 'x2']].values
+y_test = test_dat['y'].values
+
+# Run custom KNN
+y_pred_custom = knn_predict(X_train, y_train, X_test, k=5)
+```
+
+```{python}
+#| echo: false
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+# Fit scikit-learn KNN
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+y_pred_sklearn = knn.predict(X_test)
+
+# Compare accuracy
+acc_custom = accuracy_score(y_test, y_pred_custom)
+acc_sklearn = accuracy_score(y_test, y_pred_sklearn)
+
+print(f"Custom KNN Accuracy: {acc_custom:.2f}")
+print(f"Scikit-Learn KNN Accuracy: {acc_sklearn:.2f}")
+```
+
+
+```{python}
+#|echo: false
+# Create a grid of x1 and x2 values
+xx, yy = np.meshgrid(np.linspace(-3, 3, 300), np.linspace(-3, 3, 300))
+grid_points = np.c_[xx.ravel(), yy.ravel()]
+
+# Predict labels for each point in the grid
+Z = knn.predict(grid_points)
+Z = Z.reshape(xx.shape)
+
+# Plot the decision boundary with the training data
+plt.figure(figsize=(7, 6))
+plt.contourf(xx, yy, Z, cmap='bwr', alpha=0.2)
+plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='bwr', edgecolor='k', s=60)
+plt.title('KNN Decision Boundary (k=5)')
+plt.xlabel('x1')
+plt.ylabel('x2')
+plt.grid(True)
+plt.show()
+```
+
+- This graph shows how KNN (with k = 5) splits the feature space into red and blue regions based on the training data — the wavy decision boundary closely follows the true class separation pattern.
+
+#### Testing Accuracy at Different Values of K
+
+-Below we have run the function for k=1,...,k=30, each time noting the percentage of correctly-classified points from the test dataset. 
+- Results are plotted where the horizontal axis is 1-30 and the vertical axis is the percentage of correctly-classified points. 
+
+```{python}
+#|echo: false
+# Store accuracy results
+k_values = list(range(1, 31))
+accuracies = []
+
+for k in k_values:
+    preds = knn_predict(X_train, y_train, X_test, k=k)
+    acc = accuracy_score(y_test, preds)
+    accuracies.append(acc * 100)  # convert to percentage
+```
+
+```{python}
+#|echo: false
+# Plot accuracy vs. k
+plt.figure(figsize=(7, 5))
+plt.plot(k_values, accuracies, marker='o')
+plt.title('KNN Accuracy vs. K (Test Set)')
+plt.xlabel('K (Number of Neighbors)')
+plt.ylabel('Accuracy (%)')
+plt.xticks(k_values)
+plt.grid(True)
+plt.show()
+```
+
+- The optimal value of K is **1 or 2**, where the classifier achieved its **highest test accuracy of 94%**. These low values of K allow the model to capture the complex shape of the true boundary with minimal error.
+- K = 1: Very flexible, closely fits training data, great if your data is clean and your test points are near known examples.
+- K = 5: More conservative, smoother boundary, often more stable across noisy data or real-world settings.
+
+
+
+
+
+
+
